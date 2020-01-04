@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="robots" content="NOINDEX, NOFOLLOW" />
+    <title>Thesis</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/104/three.js"></script>
+</head>
+<body>
+<div class="container">
+ <div class="row">
+     <h4 style="margin: 30px;"> <span class="badge badge-secondary">All Records </span></h4>   
+ </div>
+    <div class="row">
+        <div class="col">
+          <table class="table" style="width: 50%; margin: 10px;">
+              <tr>
+                  <th scope="col">Track ID</th>
+                  <th scope="col">Zone</th>
+                  <th scope="col">Event Type</th>
+                  <th scope="col">Hashmac</th>
+                  <th scope="col">Timestamp</th>
+                  <th scope="col">MAC</th>
+               </tr>
+               <tbody>
+                <tr th:each="entry: ${list}">
+                    <td th:text="*{entry.trackid}"></td>
+                    <td th:text="*{entry.zone}"></td>
+                    <td th:text="*{entry.eventtype} == 0 ? 'Enterd' : 'Left'"></td>
+                    <td th:text="*{entry.hashMac}"></td>
+                    <td th:text="*{entry.timestamp}"></td>
+                    <td th:text="*{entry.truncmac}"></td>
+               </tr>           
+               </tbody>
+          </table>     
+        </div>
+        <div class="col" style="margin-top: 5%;">
+                <a class="btn btn-secondary" th:href="@{/index}">Show Distinct MACs</a>
+                <a class="btn btn-secondary" th:href="@{/entered}">Show All Entered Zones</a>
+                <a class="btn btn-secondary" th:href="@{/left}">Show All Left Zones</a>
+                <div class="btn-group dropleft">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Filter by Zone
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" th:each="entry: ${zones}" th:name="zone" th:value="${entry}" th:href="@{'/zone/' + ${entry}}" th:text="${entry}"></a>
+                    </div>
+                </div>
+                <div class="btn-group dropleft">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Filter Hourly
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" th:each="entry: ${hours}" th:name="time" th:value="${entry}" th:href="@{'/hourly/' + ${entry}}" th:text="${entry} + ':00:00'"></a>
+                    </div>
+                </div>
+                <div class="stats-div" style="margin-top: 20px;">
+                <ul class="list-group">
+                    <li class="list-group-item active" th:text="'Total Entries: ' + ${totalentries}"></li>
+                    <li class="list-group-item active" th:text="'Nr. of distinct entries: ' + ${distinctmacs}"></li>
+                    <li class="list-group-item active" th:text="' Nr. of distinct zones: ' + ${distinctzones}"></li>
+                    <li class="list-group-item active" th:text="'Nr. of entered locations: ' + ${totalentered}"></li>
+                    <li class="list-group-item active" th:text="'Nr. of left locations: ' + ${totalleft}"></li>
+                    <li class="list-group-item active" th:text="'Nr. of distinct vendors: ' + ${distinctvendors} "></li>
+                 </ul>             
+            </div>
+        </div>
+     </div>   
+</div>
+   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+   <script src="http://code.jquery.com/jquery-1.6.4.min.js" type="text/javascript"></script>
+  </body>
+</html>
