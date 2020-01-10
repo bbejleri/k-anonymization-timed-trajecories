@@ -75,6 +75,20 @@ public class SingleRecordService {
 		return zones;
 	}
 
+	public String getTrajectoryForMacRoutes(List<SingleRecord> routes) {
+		List<String> locations = routes.stream().map(x -> x.getZone()).distinct().collect(Collectors.toList());
+		List<SingleRecord> selectedRoutes = new ArrayList<SingleRecord>();
+		locations.stream().forEach(l -> {
+			routes.stream().filter(x -> x.getZone() == l).findFirst().ifPresent(selectedRoutes::add);
+		});
+		StringBuilder sb = new StringBuilder();
+		String finaltrajectory = null;
+		for (SingleRecord record : selectedRoutes) {
+			finaltrajectory = sb.append(" --> ").append(record.getZone()).append(" (").append(record.getTimestamp()).append(") ").toString();
+		}
+		return finaltrajectory;
+	}
+
 	@Transactional
 	public void removeTimestampLocaltime() {
 		this.getList().stream().forEach(x -> {

@@ -16,22 +16,21 @@ import com.bora.thesis.service.SingleRecordService;
  * @author: bora
  */
 @Controller
-public class IndexContoller {
+public class FormedTrajectoryController {
 
 	@Autowired
 	private SingleRecordService singleRecordService;
 
-	@RequestMapping(value = "/index", method = RequestMethod.GET)
+	@RequestMapping(value = "/alltrajectories", method = RequestMethod.GET)
 	public String doGet(final Model model) {
-		int numberOfEntities = this.singleRecordService.getDistinctMacAdresses().size();
 		List<String> distinctMacAddresses = this.singleRecordService.getDistinctMacAdresses();
 		List<String> trajectories = new ArrayList<String>();
 		distinctMacAddresses.stream().forEach(x -> {
 			List<SingleRecord> routes = this.singleRecordService.getByMacAddress(x);
 			trajectories.add(this.singleRecordService.getTrajectoryForMacRoutes(routes));
 		});
-		model.addAttribute("totalentries", numberOfEntities);
 		model.addAttribute("distinctMacAddresses", distinctMacAddresses);
-		return "statistics";
+		model.addAttribute("list", trajectories.subList(0, 50));
+		return "all-formed-trajectories";
 	}
 }
