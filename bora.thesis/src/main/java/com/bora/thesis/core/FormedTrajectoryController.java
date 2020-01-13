@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.bora.thesis.dataaccess.SingleRecord;
+import com.bora.thesis.service.ParentService;
 import com.bora.thesis.service.SingleRecordService;
 
 /**
@@ -21,10 +22,14 @@ public class FormedTrajectoryController {
 	@Autowired
 	private SingleRecordService singleRecordService;
 
+	@Autowired
+	private ParentService parentService;
+
 	@RequestMapping(value = "/alltrajectories", method = RequestMethod.GET)
 	public String doGet(final Model model) {
 		List<String> distinctMacAddresses = this.singleRecordService.getDistinctMacAdresses();
 		List<String> trajectories = new ArrayList<String>();
+		System.out.println(this.parentService.logestCommonSubsequence("bz1083", "bz1078"));
 		distinctMacAddresses.stream().forEach(x -> {
 			List<SingleRecord> routes = this.singleRecordService.getByMacAddress(x);
 			trajectories.add(this.singleRecordService.getTrajectoryForMacRoutes(routes));

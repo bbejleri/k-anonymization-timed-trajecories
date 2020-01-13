@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.bora.thesis.dataaccess.SingleRecord;
 import com.bora.thesis.repositories.SingleRecordRepository;
+import com.bora.thesis.service.ParentService;
 import com.bora.thesis.service.SingleRecordService;
 
 /**
@@ -24,6 +25,9 @@ public class SingleRecordController {
 
 	@Autowired
 	private SingleRecordService singleRecordService;
+
+	@Autowired
+	private ParentService parentService;
 
 	@Autowired
 	private SingleRecordRepository singleRecordRepository;
