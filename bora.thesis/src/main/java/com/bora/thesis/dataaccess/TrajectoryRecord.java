@@ -5,54 +5,37 @@ package com.bora.thesis.dataaccess;
  */
 public class TrajectoryRecord {
 
-	private int eventtype;
+	private String vizualizedTrajectory;
 
-	private String zone;
-
-	private String time;
+	private String inicalTrajectory;
 
 	/**
-	 * @return the eventtype
+	 * @return the vizualizedTrajectory
 	 */
-	public int getEventtype() {
-		return eventtype;
+	public String getVizualizedTrajectory() {
+		return vizualizedTrajectory;
 	}
 
 	/**
-	 * @return the zone
+	 * @return the inicalTrajectory
 	 */
-	public String getZone() {
-		return zone;
+	public String getInicalTrajectory() {
+		return inicalTrajectory;
 	}
 
 	/**
-	 * @return the time
+	 * @param vizualizedTrajectory
+	 *           the vizualizedTrajectory to set
 	 */
-	public String getTime() {
-		return time;
+	public void setVizualizedTrajectory(String vizualizedTrajectory) {
+		this.vizualizedTrajectory = vizualizedTrajectory;
 	}
 
 	/**
-	 * @param eventtype
-	 *           the eventtype to set
+	 * @param inicalTrajectory
+	 *           the inicalTrajectory to set
 	 */
-	public void setEventtype(int eventtype) {
-		this.eventtype = eventtype;
-	}
-
-	/**
-	 * @param zone
-	 *           the zone to set
-	 */
-	public void setZone(String zone) {
-		this.zone = zone;
-	}
-
-	/**
-	 * @param time
-	 *           the time to set
-	 */
-	public void setTime(String time) {
-		this.time = time;
+	public void setInicalTrajectory(String inicalTrajectory) {
+		this.inicalTrajectory = inicalTrajectory;
 	}
 }

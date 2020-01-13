@@ -26,7 +26,6 @@ public class TrajectoryRecordController {
 		List<SingleRecord> routes = this.singleRecordService.getByMacAddress(hashmac);
 		model.addAttribute("totalentries", routes.size());
 		model.addAttribute("distinctzones", routes.stream().map(x -> x.getZone()).distinct().count());
-		model.addAttribute("distinctmacs", routes.stream().map(x -> x.getHashMac()).distinct().count());
 		model.addAttribute("finaltrajectory", this.singleRecordService.getTrajectoryForMacRoutes(routes));
 		model.addAttribute("mac", hashmac);
 		model.addAttribute("list", routes);

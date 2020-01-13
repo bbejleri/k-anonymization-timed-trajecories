@@ -18,19 +18,50 @@
      <h4 style="margin: 30px;"><span class="badge badge-secondary">All Formed Trajectories</span></h4>   
    </div>
     <div class="row">
-        <div class="col-lg">
-           <table class="table" style="width: 100%; margin: 20px;">
+        <div class="col">
+           <table class="table" style="margin: 20px;">
               <tr>
-                  <th scope="col">Trajectory</th>                 
+                  <th scope="col">Visualized trajectories</th>
+                  <th scope="col">Trajectories by Initials</th>                 
                </tr>
                <tbody>
                 <tr th:each="entry: ${list}">
-                    <td th:text="*{entry}"></td>
+                    <td th:text="*{entry.vizualizedTrajectory}"></td>
+                    <td th:text="*{entry.inicalTrajectory}"></td>
                </tr>           
                </tbody>
           </table>    
      </div>
-  </div>      
+     <div class="col" style="margin-left: 40px;">
+           <fieldset class="border p-2">
+               <legend >Trajectory Legend</legend>
+               <p>bz1060 - A - Obere Brücke</p>
+               <p>bz1069 - B - Gabelmann</p>
+               <p>bz1078 - C - Gruenermarkt</p>
+               <p>bz1082 - D - Obstmarkt</p>
+               <p>bz1083 - E - Infostand</p>
+               <p>bz1084 - F - Maxplatz</p>
+           </fieldset> 
+            <div class="row">
+                <h4 style="margin: 30px;"> <span class="badge badge-secondary">Summary </span></h4>   
+            </div>
+            <div class="stats-div">          
+                <ul class="list-group">
+                    <li class="list-group-item active" th:text="'Total Trajectories: ' + ${totalTrajectories}"></li>
+                    <li class="list-group-item" th:text="'Single-Location Trajectories:'"></li>             
+                    <li class="list-group-item active" th:text="'A Trajectories: ' + ${aTrajectories}"></li>
+                    <li class="list-group-item active" th:text="'B Trajectories: ' + ${bTrajectories}"></li>
+                    <li class="list-group-item active" th:text="'C Trajectories: ' + ${cTrajectories}"></li>
+                    <li class="list-group-item active" th:text="'D Trajectories: ' + ${dTrajectories}"></li>
+                    <li class="list-group-item active" th:text="'E Trajectories: ' + ${eTrajectories}"></li>
+                    <li class="list-group-item active" th:text="'F Trajectories: ' + ${fTrajectories}"></li>
+                 </ul>             
+            </div>
+            <div class="row" style="margin-left: 30px; margin-top: 10px;">
+               <a class="btn btn-primary" th:href="@{/index}" role="button">Back</a>
+           </div>
+        </div>         
+       </div> 
 </div>
    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>

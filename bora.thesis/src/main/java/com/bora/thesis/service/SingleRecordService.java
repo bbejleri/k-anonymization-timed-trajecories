@@ -2,6 +2,7 @@ package com.bora.thesis.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -76,17 +77,43 @@ public class SingleRecordService {
 	}
 
 	public String getTrajectoryForMacRoutes(List<SingleRecord> routes) {
-		List<String> locations = routes.stream().map(x -> x.getZone()).distinct().collect(Collectors.toList());
-		List<SingleRecord> selectedRoutes = new ArrayList<SingleRecord>();
+		final List<String> locations = routes.stream().map(x -> x.getZone()).distinct().collect(Collectors.toList());
+		final List<SingleRecord> selectedRoutes = new ArrayList<SingleRecord>();
 		locations.stream().forEach(l -> {
 			routes.stream().filter(x -> x.getZone() == l).findFirst().ifPresent(selectedRoutes::add);
 		});
 		StringBuilder sb = new StringBuilder();
 		String finaltrajectory = null;
 		for (SingleRecord record : selectedRoutes) {
-			finaltrajectory = sb.append(" --> ").append(record.getZone()).append(" (").append(record.getTimestamp()).append(") ").toString();
+			finaltrajectory = sb.append(" --> ").append(record.getZone()).toString();
 		}
 		return finaltrajectory;
+	}
+
+	public String getTrajectoriesWithInicials(List<SingleRecord> routes) {
+		final List<String> locations = routes.stream().map(x -> x.getZone()).distinct().collect(Collectors.toList());
+		final List<SingleRecord> selectedRoutes = new ArrayList<SingleRecord>();
+		final HashMap<String, String> zoneInicials = this.getZoneInicials();
+		locations.stream().forEach(l -> {
+			routes.stream().filter(x -> x.getZone() == l).findFirst().ifPresent(selectedRoutes::add);
+		});
+		StringBuilder sb = new StringBuilder();
+		String finaltrajectory = null;
+		for (SingleRecord record : selectedRoutes) {
+			finaltrajectory = sb.append(zoneInicials.get(record.getZone())).toString();
+		}
+		return finaltrajectory;
+	}
+
+	public HashMap<String, String> getZoneInicials() {
+		final HashMap<String, String> zoneInicials = new HashMap<String, String>();
+		zoneInicials.put("bz1060", "A");
+		zoneInicials.put("bz1069", "B");
+		zoneInicials.put("bz1078", "C");
+		zoneInicials.put("bz1082", "D");
+		zoneInicials.put("bz1083", "E");
+		zoneInicials.put("bz1084", "F");
+		return zoneInicials;
 	}
 
 	@Transactional
