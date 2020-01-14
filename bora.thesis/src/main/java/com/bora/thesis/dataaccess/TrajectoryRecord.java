@@ -9,12 +9,7 @@ public class TrajectoryRecord {
 
 	private String inicalTrajectory;
 
-	/**
-	 * @return the vizualizedTrajectory
-	 */
-	public String getVizualizedTrajectory() {
-		return vizualizedTrajectory;
-	}
+	private String namedTrajectory;
 
 	/**
 	 * @return the inicalTrajectory
@@ -24,11 +19,17 @@ public class TrajectoryRecord {
 	}
 
 	/**
-	 * @param vizualizedTrajectory
-	 *           the vizualizedTrajectory to set
+	 * @return the namedTrajectory
 	 */
-	public void setVizualizedTrajectory(String vizualizedTrajectory) {
-		this.vizualizedTrajectory = vizualizedTrajectory;
+	public String getNamedTrajectory() {
+		return namedTrajectory;
+	}
+
+	/**
+	 * @return the vizualizedTrajectory
+	 */
+	public String getVizualizedTrajectory() {
+		return vizualizedTrajectory;
 	}
 
 	/**
@@ -37,5 +38,21 @@ public class TrajectoryRecord {
 	 */
 	public void setInicalTrajectory(String inicalTrajectory) {
 		this.inicalTrajectory = inicalTrajectory;
+	}
+
+	/**
+	 * @param namedTrajectory
+	 *           the namedTrajectory to set
+	 */
+	public void setNamedTrajectory(String namedTrajectory) {
+		this.namedTrajectory = namedTrajectory;
+	}
+
+	/**
+	 * @param vizualizedTrajectory
+	 *           the vizualizedTrajectory to set
+	 */
+	public void setVizualizedTrajectory(String vizualizedTrajectory) {
+		this.vizualizedTrajectory = vizualizedTrajectory;
 	}
 }

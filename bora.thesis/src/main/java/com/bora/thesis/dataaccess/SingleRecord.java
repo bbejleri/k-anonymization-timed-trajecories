@@ -17,13 +17,13 @@ import com.bora.thesis.configs.EntityModel;
 /**
  * @author: bora
  */
-@Entity(name = "flowtrack_raw_5000")
-@NamedQueries({ @NamedQuery(name = "SingleRecord.getAll", query = "SELECT a FROM flowtrack_raw_5000 a"),
-		@NamedQuery(name = "SingleRecord.getByMac", query = "SELECT s FROM flowtrack_raw_5000 s WHERE s.hashMac = :hashmac"),
-		@NamedQuery(name = "SingleRecord.getById", query = "SELECT i FROM flowtrack_raw_5000 i WHERE i.trackid = :trackid"),
-		@NamedQuery(name = "SingleRecord.getByZone", query = "SELECT z FROM flowtrack_raw_5000 z WHERE z.zone = :zone"),
-		@NamedQuery(name = "SingleRecord.getDateRange", query = "SELECT e FROM flowtrack_raw_5000 e WHERE e.insert_timestamp BETWEEN :startDate AND :endDate") })
-@Table(name = "flowtrack_raw_5000")
+@Entity(name = "flowtrack_raw_10000")
+@NamedQueries({ @NamedQuery(name = "SingleRecord.getAll", query = "SELECT a FROM flowtrack_raw_10000 a"),
+		@NamedQuery(name = "SingleRecord.getByMac", query = "SELECT s FROM flowtrack_raw_10000 s WHERE s.hashMac = :hashmac"),
+		@NamedQuery(name = "SingleRecord.getById", query = "SELECT i FROM flowtrack_raw_10000 i WHERE i.trackid = :trackid"),
+		@NamedQuery(name = "SingleRecord.getByZone", query = "SELECT z FROM flowtrack_raw_10000 z WHERE z.zone = :zone"),
+		@NamedQuery(name = "SingleRecord.getDateRange", query = "SELECT e FROM flowtrack_raw_10000 e WHERE e.insert_timestamp BETWEEN :startDate AND :endDate") })
+@Table(name = "flowtrack_raw_10000")
 @DynamicUpdate
 public class SingleRecord implements EntityModel {
 

@@ -19,14 +19,16 @@
    </div>
     <div class="row">
         <div class="col">
-           <table class="table" style="margin: 20px;">
+           <table class="table">
               <tr>
                   <th scope="col">Visualized trajectories</th>
+                  <th scope="col">Named trajectories</th>
                   <th scope="col">Trajectories by Initials</th>                 
                </tr>
                <tbody>
                 <tr th:each="entry: ${list}">
                     <td th:text="*{entry.vizualizedTrajectory}"></td>
+                    <td th:text="*{entry.namedTrajectory}"></td>
                     <td th:text="*{entry.inicalTrajectory}"></td>
                </tr>           
                </tbody>
@@ -34,7 +36,7 @@
      </div>
      <div class="col" style="margin-left: 40px;">
            <fieldset class="border p-2">
-               <legend >Trajectory Legend</legend>
+               <legend>Trajectory Legend</legend>
                <p>bz1060 - A - Obere Brücke</p>
                <p>bz1069 - B - Gabelmann</p>
                <p>bz1078 - C - Gruenermarkt</p>
@@ -44,10 +46,11 @@
            </fieldset> 
             <div class="row">
                 <h4 style="margin: 30px;"> <span class="badge badge-secondary">Summary </span></h4>   
-            </div>
+            </div>            
             <div class="stats-div">          
                 <ul class="list-group">
                     <li class="list-group-item active" th:text="'Total Trajectories: ' + ${totalTrajectories}"></li>
+                    <li class="list-group-item active" th:text="'Multiple-Location Trajectories: ' + ${multipleLocationTrajectories}"></li>
                     <li class="list-group-item" th:text="'Single-Location Trajectories:'"></li>             
                     <li class="list-group-item active" th:text="'A Trajectories: ' + ${aTrajectories}"></li>
                     <li class="list-group-item active" th:text="'B Trajectories: ' + ${bTrajectories}"></li>

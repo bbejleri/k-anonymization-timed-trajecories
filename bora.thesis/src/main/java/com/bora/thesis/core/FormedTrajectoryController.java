@@ -30,21 +30,16 @@ public class FormedTrajectoryController {
 	public String doGet(final Model model) {
 		List<String> distinctMacAddresses = this.singleRecordService.getDistinctMacAdresses();
 		List<String> trajectories = new ArrayList<String>();
-		List<TrajectoryRecord> trajectoryRecords = new ArrayList<TrajectoryRecord>();
 		List<String> trajectoriesWithInicials = new ArrayList<String>();
+		List<String> trajectoriesWithNames = new ArrayList<String>();
 		distinctMacAddresses.stream().forEach(x -> {
 			List<SingleRecord> routes = this.singleRecordService.getByMacAddress(x);
 			trajectories.add(this.singleRecordService.getTrajectoryForMacRoutes(routes));
 			trajectoriesWithInicials.add(this.singleRecordService.getTrajectoriesWithInicials(routes));
+			trajectoriesWithNames.add(this.singleRecordService.getTrajectoriesWithNames(routes));
 		});
-		trajectories.stream().forEach(x -> {
-			TrajectoryRecord trajectroyRecord = new TrajectoryRecord();
-			trajectroyRecord.setVizualizedTrajectory(x);
-			trajectoryRecords.add(trajectroyRecord);
-		});
-		for (int i = 0; i < trajectoryRecords.size(); i++) {
-			trajectoryRecords.get(i).setInicalTrajectory(trajectoriesWithInicials.get(i));
-		}
+		List<String> multipleLocationTrajectories = this.singleRecordService.getMultipleLocationTrajectories(trajectoriesWithInicials);
+		List<TrajectoryRecord> trajectoryRecords = this.singleRecordService.fillTrajectoryRecords(trajectories, trajectoriesWithInicials, trajectoriesWithNames);
 		final long aTrajectories = trajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("A")).count();
 		final long bTrajectories = trajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("B")).count();
 		final long cTrajectories = trajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("B")).count();
@@ -52,6 +47,7 @@ public class FormedTrajectoryController {
 		final long eTrajectories = trajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("E")).count();
 		final long fTrajectories = trajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("F")).count();
 		model.addAttribute("distinctMacAddresses", distinctMacAddresses);
+		model.addAttribute("multipleLocationTrajectories", multipleLocationTrajectories.size());
 		model.addAttribute("aTrajectories", aTrajectories);
 		model.addAttribute("bTrajectories", bTrajectories);
 		model.addAttribute("cTrajectories", cTrajectories);
