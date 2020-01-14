@@ -35,7 +35,7 @@ public class SingleRecordController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String doGet(final Model model) {
 		final List<SingleRecord> records = this.singleRecordService.getList();
-		final List<String> hours = Arrays.asList("07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22");
+		final List<String> hours = Arrays.asList("17", "18", "19", "20", "21", "22");
 		final List<String> zones = records.stream().map(x -> x.getZone()).distinct().collect(Collectors.toList());
 		model.addAttribute("totalentered", records.stream().filter(x -> x.getEventtype() == 0).count());
 		model.addAttribute("totalleft", records.stream().filter(x -> x.getEventtype() == 1).count());
