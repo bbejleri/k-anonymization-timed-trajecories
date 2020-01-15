@@ -45,7 +45,7 @@ public class SingleRecordController {
 		model.addAttribute("distinctvendors", records.stream().map(x -> x.getTruncmac()).distinct().count());
 		model.addAttribute("hours", hours);
 		model.addAttribute("zones", zones);
-		model.addAttribute("list", records.subList(0, 200));
+		model.addAttribute("list", records);
 		return "main";
 	}
 

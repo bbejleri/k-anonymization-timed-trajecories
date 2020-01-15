@@ -46,6 +46,14 @@ public class SingleRecordRepository extends BasicRepository implements SpringCon
 		return CollectionUtils.isEmpty(list) ? null : list;
 	}
 
+	public SingleRecord getByZoneAndTimestamp(final String zone, final String timestamp) {
+		TypedQuery<SingleRecord> query = entityManager.createNamedQuery("SingleRecord.getByZoneAndTimestamp", SingleRecord.class);
+		query.setParameter("zone", zone);
+		query.setParameter("timestamp", timestamp);
+		SingleRecord record = query.getSingleResult();
+		return ObjectUtils.isEmpty(record) ? null : record;
+	}
+
 	public List<SingleRecord> findAllRecordsBetween(final String startDate, final String endDate) throws ParseException {
 		TypedQuery<SingleRecord> query = entityManager.createNamedQuery("SingleRecord.getDateRange", SingleRecord.class);
 		query.setParameter("startDate", startDate);

@@ -1,58 +1,26 @@
 package com.bora.thesis.dataaccess;
 
+import java.util.List;
+
 /**
  * @author: bora
  */
 public class TrajectoryRecord {
 
-	private String vizualizedTrajectory;
-
-	private String inicalTrajectory;
-
-	private String namedTrajectory;
+	private List<SingleRecord> points;
 
 	/**
-	 * @return the inicalTrajectory
+	 * @return the points
 	 */
-	public String getInicalTrajectory() {
-		return inicalTrajectory;
+	public List<SingleRecord> getPoints() {
+		return points;
 	}
 
 	/**
-	 * @return the namedTrajectory
+	 * @param points
+	 *           the points to set
 	 */
-	public String getNamedTrajectory() {
-		return namedTrajectory;
-	}
-
-	/**
-	 * @return the vizualizedTrajectory
-	 */
-	public String getVizualizedTrajectory() {
-		return vizualizedTrajectory;
-	}
-
-	/**
-	 * @param inicalTrajectory
-	 *           the inicalTrajectory to set
-	 */
-	public void setInicalTrajectory(String inicalTrajectory) {
-		this.inicalTrajectory = inicalTrajectory;
-	}
-
-	/**
-	 * @param namedTrajectory
-	 *           the namedTrajectory to set
-	 */
-	public void setNamedTrajectory(String namedTrajectory) {
-		this.namedTrajectory = namedTrajectory;
-	}
-
-	/**
-	 * @param vizualizedTrajectory
-	 *           the vizualizedTrajectory to set
-	 */
-	public void setVizualizedTrajectory(String vizualizedTrajectory) {
-		this.vizualizedTrajectory = vizualizedTrajectory;
+	public void setPoints(List<SingleRecord> points) {
+		this.points = points;
 	}
 }

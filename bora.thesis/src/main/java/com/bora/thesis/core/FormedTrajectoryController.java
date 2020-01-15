@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.bora.thesis.dataaccess.SingleRecord;
 import com.bora.thesis.dataaccess.TrajectoryRecord;
+import com.bora.thesis.dataaccess.VisualTrajectoryRecord;
 import com.bora.thesis.service.ParentService;
 import com.bora.thesis.service.SingleRecordService;
 
@@ -32,20 +33,22 @@ public class FormedTrajectoryController {
 		List<String> trajectories = new ArrayList<String>();
 		List<String> trajectoriesWithInicials = new ArrayList<String>();
 		List<String> trajectoriesWithNames = new ArrayList<String>();
+		List<TrajectoryRecord> trajectoryRecords = new ArrayList<TrajectoryRecord>();
 		distinctMacAddresses.stream().forEach(x -> {
 			List<SingleRecord> routes = this.singleRecordService.getByMacAddress(x);
+			// trajectoryRecords.add(this.singleRecordService.formTrajectoryByPointLocations(routes));
 			trajectories.add(this.singleRecordService.getTrajectoryForMacRoutes(routes));
 			trajectoriesWithInicials.add(this.singleRecordService.getTrajectoriesWithInicials(routes));
 			trajectoriesWithNames.add(this.singleRecordService.getTrajectoriesWithNames(routes));
 		});
 		List<String> multipleLocationTrajectories = this.singleRecordService.getMultipleLocationTrajectories(trajectoriesWithInicials);
-		List<TrajectoryRecord> trajectoryRecords = this.singleRecordService.fillTrajectoryRecords(trajectories, trajectoriesWithInicials, trajectoriesWithNames);
-		final long aTrajectories = trajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("A")).count();
-		final long bTrajectories = trajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("B")).count();
-		final long cTrajectories = trajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("B")).count();
-		final long dTrajectories = trajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("D")).count();
-		final long eTrajectories = trajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("E")).count();
-		final long fTrajectories = trajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("F")).count();
+		List<VisualTrajectoryRecord> visualTrajectoryRecords = this.singleRecordService.fillTrajectoryRecords(trajectories, trajectoriesWithInicials, trajectoriesWithNames);
+		final long aTrajectories = visualTrajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("A")).count();
+		final long bTrajectories = visualTrajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("B")).count();
+		final long cTrajectories = visualTrajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("B")).count();
+		final long dTrajectories = visualTrajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("D")).count();
+		final long eTrajectories = visualTrajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("E")).count();
+		final long fTrajectories = visualTrajectoryRecords.stream().filter(x -> x.getInicalTrajectory().equals("F")).count();
 		model.addAttribute("distinctMacAddresses", distinctMacAddresses);
 		model.addAttribute("multipleLocationTrajectories", multipleLocationTrajectories.size());
 		model.addAttribute("aTrajectories", aTrajectories);
@@ -54,8 +57,8 @@ public class FormedTrajectoryController {
 		model.addAttribute("dTrajectories", dTrajectories);
 		model.addAttribute("eTrajectories", eTrajectories);
 		model.addAttribute("fTrajectories", fTrajectories);
-		model.addAttribute("totalTrajectories", trajectoryRecords.size());
-		model.addAttribute("list", trajectoryRecords);
+		model.addAttribute("totalTrajectories", visualTrajectoryRecords.size());
+		model.addAttribute("list", visualTrajectoryRecords);
 		return "all-formed-trajectories";
 	}
 }

@@ -1,6 +1,9 @@
 package com.bora.thesis.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.bora.thesis.dataaccess.SingleRecord;
 import com.bora.thesis.dataaccess.TrajectoryRecord;
+import com.bora.thesis.dataaccess.VisualTrajectoryRecord;
 import com.bora.thesis.repositories.SingleRecordRepository;
 
 /**
@@ -59,7 +63,7 @@ public class SingleRecordService {
 		return this.getList().stream().filter(x -> x.getEventtype() == 1).collect(Collectors.toList());
 	}
 
-	public static String removeLastChars(String s) {
+	public String removeLastChars(final String s) {
 		return Optional.ofNullable(s).filter(str -> str.length() != 0).map(str -> str.substring(0, str.length() - 3)).orElse(s);
 	}
 
@@ -86,6 +90,47 @@ public class SingleRecordService {
 			}
 		});
 		return multipleLocationTrajectories;
+	}
+
+	public String getMinimalTimestamp(final List<String> timestamps) throws ParseException {
+		List<Date> dates = new ArrayList<Date>();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		for (String timestamp : timestamps) {
+			timestamp = this.removeLastChars(timestamp);
+			Date toDate = formatter.parse(timestamp);
+			dates.add(toDate);
+		}
+		Date minDate = Collections.min(dates);
+		String searchTimestamp = formatter.format(minDate) + "+02";
+		return searchTimestamp;
+	}
+
+	public List<String> getTimestampsForZone(final String zone) {
+		List<SingleRecord> records = this.singleRecordRepository.getByZone(zone);
+		List<String> timestamps = records.stream().map(t -> t.getTimestamp()).collect(Collectors.toList());
+		return timestamps;
+	}
+
+	/**
+	 * Forms {@link TrajectoryRecord} out of {@link SingleRecord} without noise
+	 */
+	public TrajectoryRecord formTrajectoryByPointLocations(List<SingleRecord> routes) {
+		final List<String> locations = routes.stream().map(x -> x.getZone()).distinct().collect(Collectors.toList());
+		TrajectoryRecord trajecotry = new TrajectoryRecord();
+		List<SingleRecord> points = new ArrayList<SingleRecord>();
+		locations.stream().forEach(k -> {
+			SingleRecord point = new SingleRecord();
+			final List<String> timestamps = this.getTimestampsForZone(k);
+			try {
+				point = this.singleRecordRepository.getByZoneAndTimestamp(k, this.getMinimalTimestamp(timestamps));
+			} catch (ParseException e) {
+				e.printStackTrace();
+				// TODO: Handle it
+			}
+			points.add(point);
+		});
+		trajecotry.setPoints(points);
+		return trajecotry;
 	}
 
 	public String getTrajectoryForMacRoutes(List<SingleRecord> routes) {
@@ -127,15 +172,15 @@ public class SingleRecordService {
 		StringBuilder sb = new StringBuilder();
 		String finaltrajectory = null;
 		for (SingleRecord record : selectedRoutes) {
-			finaltrajectory = sb.append("-> ").append(zoneNames.get(record.getZone())).toString();
+			finaltrajectory = sb.append(" -> ").append(zoneNames.get(record.getZone())).append(" (").append(record.getTimestamp().substring(11, 19)).append(") ").toString();
 		}
 		return finaltrajectory;
 	}
 
-	public List<TrajectoryRecord> fillTrajectoryRecords(final List<String> rawNames, final List<String> trajectoryInitials, List<String> trajectoryNames) {
-		final List<TrajectoryRecord> records = new ArrayList<TrajectoryRecord>();
+	public List<VisualTrajectoryRecord> fillTrajectoryRecords(final List<String> rawNames, final List<String> trajectoryInitials, List<String> trajectoryNames) {
+		final List<VisualTrajectoryRecord> records = new ArrayList<VisualTrajectoryRecord>();
 		for (int i = 0; i < rawNames.size(); i++) {
-			TrajectoryRecord record = new TrajectoryRecord();
+			VisualTrajectoryRecord record = new VisualTrajectoryRecord();
 			record.setVizualizedTrajectory(rawNames.get(i));
 			record.setInicalTrajectory(trajectoryInitials.get(i));
 			record.setNamedTrajectory(trajectoryNames.get(i));
@@ -169,7 +214,7 @@ public class SingleRecordService {
 	@Transactional
 	public void removeTimestampLocaltime() {
 		this.getList().stream().forEach(x -> {
-			this.singleRecordRepository.updateTimestamp(SingleRecordService.removeLastChars(x.getTimestamp()), x.getTrackid(), this.getById(x.getTrackid()));
+			this.singleRecordRepository.updateTimestamp(this.removeLastChars(x.getTimestamp()), x.getTrackid(), this.getById(x.getTrackid()));
 		});
 	}
 }
