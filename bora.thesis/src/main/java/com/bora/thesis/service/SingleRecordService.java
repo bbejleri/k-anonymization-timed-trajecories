@@ -1,10 +1,8 @@
 package com.bora.thesis.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -26,6 +24,9 @@ public class SingleRecordService {
 
 	@Autowired
 	private SingleRecordRepository singleRecordRepository;
+
+	@Autowired
+	private HelperService helperService;
 
 	public List<SingleRecord> getList() {
 		return singleRecordRepository.getAll();
@@ -59,18 +60,6 @@ public class SingleRecordService {
 
 	public List<SingleRecord> getAllLeft() {
 		return this.getList().stream().filter(x -> x.getEventtype() == 1).collect(Collectors.toList());
-	}
-
-	public String removeLastChars(final String s) {
-		return Optional.ofNullable(s).filter(str -> str.length() != 0).map(str -> str.substring(0, str.length() - 3)).orElse(s);
-	}
-
-	public boolean checkDateRange(final Date min, final Date max, final Date current) {
-		boolean check = Boolean.FALSE;
-		if (current.after(min) && current.before(max)) {
-			check = Boolean.TRUE;
-		}
-		return check;
 	}
 
 	public List<String> getDistinctZones() {
@@ -152,7 +141,7 @@ public class SingleRecordService {
 	@Transactional
 	public void removeTimestampLocaltime() {
 		this.getList().stream().forEach(x -> {
-			this.singleRecordRepository.updateTimestamp(this.removeLastChars(x.getTimestamp()), x.getTrackid(), this.getById(x.getTrackid()));
+			this.singleRecordRepository.updateTimestamp(this.helperService.removeLastChars(x.getTimestamp()), x.getTrackid(), this.getById(x.getTrackid()));
 		});
 	}
 }
