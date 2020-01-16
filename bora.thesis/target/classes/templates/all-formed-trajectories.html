@@ -26,7 +26,7 @@
                   <th scope="col">Trajectories by Initials</th>                 
                </tr>
                <tbody>
-                <tr th:each="entry: ${list}">
+                <tr th:each="entry: ${visuals}">
                     <td th:text="*{entry.vizualizedTrajectory}"></td>
                     <td th:text="*{entry.namedTrajectory}"></td>
                     <td th:text="*{entry.inicalTrajectory}"></td>

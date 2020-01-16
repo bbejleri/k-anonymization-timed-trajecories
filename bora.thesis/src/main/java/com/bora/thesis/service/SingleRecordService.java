@@ -1,13 +1,11 @@
 package com.bora.thesis.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -81,28 +79,15 @@ public class SingleRecordService {
 		return zones;
 	}
 
-	public List<String> getMultipleLocationTrajectories(final List<String> trajectoriesWithInicials) {
+	public boolean isMultipleLocationTrajectory(String initializedTrajectory) {
 		List<String> multipleLocationTrajectories = new ArrayList<String>();
-		trajectoriesWithInicials.stream().forEach(k -> {
-			List<Character> chars = k.chars().mapToObj(y -> (char) y).collect(Collectors.toList());
-			if (chars.size() > 1) {
-				multipleLocationTrajectories.add(chars.toString());
-			}
-		});
-		return multipleLocationTrajectories;
-	}
-
-	public String getMinimalTimestamp(final List<String> timestamps) throws ParseException {
-		List<Date> dates = new ArrayList<Date>();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		for (String timestamp : timestamps) {
-			timestamp = this.removeLastChars(timestamp);
-			Date toDate = formatter.parse(timestamp);
-			dates.add(toDate);
+		boolean isMultipleLocation = Boolean.FALSE;
+		List<Character> chars = initializedTrajectory.chars().mapToObj(y -> (char) y).collect(Collectors.toList());
+		if (chars.size() > 1) {
+			multipleLocationTrajectories.add(chars.toString());
+			isMultipleLocation = Boolean.TRUE;
 		}
-		Date minDate = Collections.min(dates);
-		String searchTimestamp = formatter.format(minDate) + "+02";
-		return searchTimestamp;
+		return isMultipleLocation;
 	}
 
 	public List<String> getTimestampsForZone(final String zone) {
@@ -114,79 +99,32 @@ public class SingleRecordService {
 	/**
 	 * Forms {@link TrajectoryRecord} out of {@link SingleRecord} without noise
 	 */
-	public TrajectoryRecord formTrajectoryByPointLocations(List<SingleRecord> routes) {
-		final List<String> locations = routes.stream().map(x -> x.getZone()).distinct().collect(Collectors.toList());
-		TrajectoryRecord trajecotry = new TrajectoryRecord();
-		List<SingleRecord> points = new ArrayList<SingleRecord>();
-		locations.stream().forEach(k -> {
-			SingleRecord point = new SingleRecord();
-			final List<String> timestamps = this.getTimestampsForZone(k);
-			try {
-				point = this.singleRecordRepository.getByZoneAndTimestamp(k, this.getMinimalTimestamp(timestamps));
-			} catch (ParseException e) {
-				e.printStackTrace();
-				// TODO: Handle it
-			}
-			points.add(point);
-		});
-		trajecotry.setPoints(points);
-		return trajecotry;
+	public TrajectoryRecord formTrajectoryByPointLocations(List<SingleRecord> route) {
+		TrajectoryRecord trajectory = new TrajectoryRecord();
+		List<SingleRecord> selected = new ArrayList<>(route.stream().collect(Collectors.toMap(SingleRecord::getZone, Function.identity(), (u1, u2) -> u1)).values());
+		trajectory.setPoints(selected);
+		return trajectory;
 	}
 
-	public String getTrajectoryForMacRoutes(List<SingleRecord> routes) {
-		final List<String> locations = routes.stream().map(x -> x.getZone()).distinct().collect(Collectors.toList());
-		final List<SingleRecord> selectedRoutes = new ArrayList<SingleRecord>();
-		locations.stream().forEach(l -> {
-			routes.stream().filter(x -> x.getZone() == l).findFirst().ifPresent(selectedRoutes::add);
-		});
-		StringBuilder sb = new StringBuilder();
-		String finaltrajectory = null;
-		for (SingleRecord record : selectedRoutes) {
-			finaltrajectory = sb.append(" -> ").append(record.getZone()).toString();
-		}
-		return finaltrajectory;
-	}
-
-	public String getTrajectoriesWithInicials(List<SingleRecord> routes) {
-		final List<String> locations = routes.stream().map(x -> x.getZone()).distinct().collect(Collectors.toList());
-		final List<SingleRecord> selectedRoutes = new ArrayList<SingleRecord>();
+	public VisualTrajectoryRecord translateToVisualisedTrajectory(final TrajectoryRecord trajectory) {
 		final HashMap<String, String> zoneInicials = this.getZoneInicials();
-		locations.stream().forEach(l -> {
-			routes.stream().filter(x -> x.getZone() == l).findFirst().ifPresent(selectedRoutes::add);
-		});
-		StringBuilder sb = new StringBuilder();
-		String finaltrajectory = null;
-		for (SingleRecord record : selectedRoutes) {
-			finaltrajectory = sb.append(zoneInicials.get(record.getZone())).toString();
-		}
-		return finaltrajectory;
-	}
-
-	public String getTrajectoriesWithNames(final List<SingleRecord> routes) {
-		final List<String> locations = routes.stream().map(x -> x.getZone()).distinct().collect(Collectors.toList());
-		final List<SingleRecord> selectedRoutes = new ArrayList<SingleRecord>();
 		final HashMap<String, String> zoneNames = this.getZoneNames();
-		locations.stream().forEach(l -> {
-			routes.stream().filter(x -> x.getZone() == l).findFirst().ifPresent(selectedRoutes::add);
-		});
 		StringBuilder sb = new StringBuilder();
-		String finaltrajectory = null;
-		for (SingleRecord record : selectedRoutes) {
-			finaltrajectory = sb.append(" -> ").append(zoneNames.get(record.getZone())).append(" (").append(record.getTimestamp().substring(11, 19)).append(") ").toString();
+		StringBuilder sb1 = new StringBuilder();
+		StringBuilder sb2 = new StringBuilder();
+		String visualised = null;
+		String named = null;
+		String initialized = null;
+		VisualTrajectoryRecord visualTrajectoryRecord = new VisualTrajectoryRecord();
+		for (SingleRecord point : trajectory.getPoints()) {
+			visualised = sb.append(" -> ").append(point.getZone()).toString();
+			named = sb1.append(" -> ").append(zoneNames.get(point.getZone())).append(" (").append(point.getTimestamp().substring(11, 19)).append(") ").toString();
+			initialized = sb2.append(zoneInicials.get(point.getZone())).toString();
 		}
-		return finaltrajectory;
-	}
-
-	public List<VisualTrajectoryRecord> fillTrajectoryRecords(final List<String> rawNames, final List<String> trajectoryInitials, List<String> trajectoryNames) {
-		final List<VisualTrajectoryRecord> records = new ArrayList<VisualTrajectoryRecord>();
-		for (int i = 0; i < rawNames.size(); i++) {
-			VisualTrajectoryRecord record = new VisualTrajectoryRecord();
-			record.setVizualizedTrajectory(rawNames.get(i));
-			record.setInicalTrajectory(trajectoryInitials.get(i));
-			record.setNamedTrajectory(trajectoryNames.get(i));
-			records.add(record);
-		}
-		return records;
+		visualTrajectoryRecord.setVizualizedTrajectory(visualised);
+		visualTrajectoryRecord.setNamedTrajectory(named);
+		visualTrajectoryRecord.setInicalTrajectory(initialized);
+		return visualTrajectoryRecord;
 	}
 
 	public HashMap<String, String> getZoneInicials() {
