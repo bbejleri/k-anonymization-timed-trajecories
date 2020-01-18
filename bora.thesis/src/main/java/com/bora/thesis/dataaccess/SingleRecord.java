@@ -22,6 +22,7 @@ import com.bora.thesis.configs.EntityModel;
 		@NamedQuery(name = "SingleRecord.getByMac", query = "SELECT s FROM flowtrack_raw_5000 s WHERE s.hashMac = :hashmac"),
 		@NamedQuery(name = "SingleRecord.getById", query = "SELECT i FROM flowtrack_raw_5000 i WHERE i.trackid = :trackid"),
 		@NamedQuery(name = "SingleRecord.getByZone", query = "SELECT z FROM flowtrack_raw_5000 z WHERE z.zone = :zone"),
+		@NamedQuery(name = "SingleRecord.getBySingleZone", query = "SELECT s FROM flowtrack_raw_5000 s WHERE s.zone = :zone"),
 		@NamedQuery(name = "SingleRecord.getByZoneAndTimestamp", query = "SELECT r FROM flowtrack_raw_5000 r WHERE r.zone = :zone AND r.insert_timestamp = :timestamp"),
 		@NamedQuery(name = "SingleRecord.getDateRange", query = "SELECT e FROM flowtrack_raw_5000 e WHERE e.insert_timestamp BETWEEN :startDate AND :endDate") })
 @Table(name = "flowtrack_raw_5000")

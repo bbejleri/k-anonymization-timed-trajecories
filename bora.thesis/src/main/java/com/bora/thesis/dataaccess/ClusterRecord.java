@@ -7,12 +7,12 @@ import java.util.List;
  */
 public class ClusterRecord {
 
-	private List<VisualTrajectoryRecord> trajectories;
+	private List<TrajectoryRecord> trajectories;
 
 	/**
 	 * @return the trajectories
 	 */
-	public List<VisualTrajectoryRecord> getTrajectories() {
+	public List<TrajectoryRecord> getTrajectories() {
 		return trajectories;
 	}
 
@@ -20,7 +20,7 @@ public class ClusterRecord {
 	 * @param trajectories
 	 *           the trajectories to set
 	 */
-	public void setTrajectories(List<VisualTrajectoryRecord> trajectories) {
+	public void setTrajectories(List<TrajectoryRecord> trajectories) {
 		this.trajectories = trajectories;
 	}
 }

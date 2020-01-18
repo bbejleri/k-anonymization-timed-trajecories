@@ -54,6 +54,10 @@ public class SingleRecordService {
 		return this.singleRecordRepository.getByZone(zone);
 	}
 
+	public SingleRecord getByZoneAndTimestamp(final String zone, final String timestamp) {
+		return this.singleRecordRepository.getByZoneAndTimestamp(zone, timestamp);
+	}
+
 	public List<SingleRecord> getAllEntered() {
 		return this.getList().stream().filter(x -> x.getEventtype() == 0).collect(Collectors.toList());
 	}
@@ -107,13 +111,32 @@ public class SingleRecordService {
 		VisualTrajectoryRecord visualTrajectoryRecord = new VisualTrajectoryRecord();
 		for (SingleRecord point : trajectory.getPoints()) {
 			visualised = sb.append(" -> ").append(point.getZone()).toString();
-			named = sb1.append(" -> ").append(zoneNames.get(point.getZone())).append(" (").append(point.getTimestamp().substring(11, 19)).append(") ").toString();
+			named = sb1.append(" -> ").append(zoneNames.get(point.getZone())).append(" (").append(point.getTimestamp()).append(") ").toString();
 			initialized = sb2.append(zoneInicials.get(point.getZone())).toString();
 		}
 		visualTrajectoryRecord.setVizualizedTrajectory(visualised);
 		visualTrajectoryRecord.setNamedTrajectory(named);
 		visualTrajectoryRecord.setInicalTrajectory(initialized);
 		return visualTrajectoryRecord;
+	}
+
+	public TrajectoryRecord translateToTrajectoryRecord(final VisualTrajectoryRecord visualTrajectoryRecord) {
+		final TrajectoryRecord finalTrajectory = new TrajectoryRecord();
+		final List<Character> chars = visualTrajectoryRecord.getInicalTrajectory().chars().mapToObj(ch -> (char) ch).collect(Collectors.toList());
+		final List<String> zones = new ArrayList<String>();
+		final List<SingleRecord> singleRecords = new ArrayList<SingleRecord>();
+		for (Character ch : chars) {
+			zones.add(this.getSymbolicZones().get(ch));
+		}
+		for (String zone : zones) {
+			singleRecords.add(this.getBySingleZone(zone));
+		}
+		finalTrajectory.setPoints(singleRecords);
+		return finalTrajectory;
+	}
+
+	private SingleRecord getBySingleZone(String zone) {
+		return this.singleRecordRepository.getBySingleZone(zone);
 	}
 
 	public HashMap<String, String> getZoneInicials() {
@@ -124,6 +147,17 @@ public class SingleRecordService {
 		zoneInicials.put("bz1082", "D");
 		zoneInicials.put("bz1083", "E");
 		zoneInicials.put("bz1084", "F");
+		return zoneInicials;
+	}
+
+	public HashMap<String, String> getSymbolicZones() {
+		final HashMap<String, String> zoneInicials = new HashMap<String, String>();
+		zoneInicials.put("A", "bz1060");
+		zoneInicials.put("B", "bz1069");
+		zoneInicials.put("C", "bz1078");
+		zoneInicials.put("D", "bz1082");
+		zoneInicials.put("E", "bz1083");
+		zoneInicials.put("F", "bz1084");
 		return zoneInicials;
 	}
 
