@@ -72,6 +72,16 @@ public class SingleRecordService {
 		return zones;
 	}
 
+	public List<TrajectoryRecord> generateAllTrajectories() {
+		List<String> distinctMacAddresses = this.getDistinctMacAdresses();
+		List<TrajectoryRecord> alltrajectories = new ArrayList<TrajectoryRecord>();
+		distinctMacAddresses.stream().forEach(x -> {
+			List<SingleRecord> routes = this.getByMacAddress(x);
+			alltrajectories.add(this.formTrajectoryByPointLocations(routes));
+		});
+		return alltrajectories;
+	}
+
 	public boolean isMultipleLocationTrajectory(String initializedTrajectory) {
 		List<String> multipleLocationTrajectories = new ArrayList<String>();
 		boolean isMultipleLocation = Boolean.FALSE;

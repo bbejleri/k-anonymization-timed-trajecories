@@ -34,7 +34,6 @@ public class ClusterRecordContoller {
 			List<SingleRecord> routes = this.singleRecordService.getByMacAddress(x);
 			alltrajectories.add(this.singleRecordService.formTrajectoryByPointLocations(routes));
 		});
-		TrajectoryRecord test = this.clusterRecordService.getFurthiestRecord(alltrajectories);
 		return "cluster-record-view";
 	}
 }
