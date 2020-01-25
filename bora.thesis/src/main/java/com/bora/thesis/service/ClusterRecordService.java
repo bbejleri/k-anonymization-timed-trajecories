@@ -1,5 +1,6 @@
 package com.bora.thesis.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -41,7 +42,7 @@ public class ClusterRecordService {
 	}
 
 	/**
-	 * Decides the furthiest trajectory from a random trajectory. Removes the random trajectory from all trajectories
+	 * Decides the furthiest trajectory from a random trajectory.
 	 * 
 	 * @param alltrajectories
 	 * @param entryPointTrajecotry
@@ -86,5 +87,21 @@ public class ClusterRecordService {
 			}
 		}
 		return bestNeighbour;
+	}
+
+	public ClusterRecord kMemberAlgorithm(final List<TrajectoryRecord> alltrajectories, int k) {
+		int clusterIndex = 0;
+		ClusterRecord cluster = new ClusterRecord();
+		List<TrajectoryRecord> clusterTrajectories = new ArrayList<TrajectoryRecord>();
+		final TrajectoryRecord randomTrajectory = this.getRandomTrajectory(alltrajectories);
+		while (alltrajectories.size() > k) {
+			TrajectoryRecord furthiestRecord = this.getFurthiestRecord(alltrajectories, randomTrajectory);
+			clusterTrajectories.add(furthiestRecord);
+			alltrajectories.remove(randomTrajectory);
+			clusterIndex++;
+			cluster.setTrajectories(clusterTrajectories);
+		}
+		System.out.println(alltrajectories.size());
+		return null;
 	}
 }

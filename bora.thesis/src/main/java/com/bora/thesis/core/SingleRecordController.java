@@ -45,7 +45,7 @@ public class SingleRecordController {
 		model.addAttribute("distinctvendors", records.stream().map(x -> x.getTruncmac()).distinct().count());
 		model.addAttribute("hours", hours);
 		model.addAttribute("zones", zones);
-		model.addAttribute("list", records);
+		model.addAttribute("list", records.subList(0, 100));
 		return "main";
 	}
 
@@ -95,5 +95,11 @@ public class SingleRecordController {
 		model.addAttribute("distinctmacs", records.stream().map(x -> x.getHashMac()).distinct().count());
 		model.addAttribute("list", records);
 		return "left-zone";
+	}
+
+	@RequestMapping(value = "/remove/noise", method = RequestMethod.GET)
+	public String removeNoiseFromRecords(final Model model) {
+		this.singleRecordService.removeNoiseFromDataset();
+		return "redirect:/";
 	}
 }

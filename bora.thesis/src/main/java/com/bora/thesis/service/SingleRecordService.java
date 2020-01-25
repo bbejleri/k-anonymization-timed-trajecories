@@ -28,6 +28,14 @@ public class SingleRecordService {
 	@Autowired
 	private HelperService helperService;
 
+	/**
+	 * Delete {@link SingleRecord}
+	 */
+	@Transactional
+	public void delete(final SingleRecord record) {
+		this.singleRecordRepository.delete(record);
+	}
+
 	public List<SingleRecord> getList() {
 		return singleRecordRepository.getAll();
 	}
@@ -72,10 +80,9 @@ public class SingleRecordService {
 		return zones;
 	}
 
-	public List<TrajectoryRecord> generateAllTrajectories() {
-		List<String> distinctMacAddresses = this.getDistinctMacAdresses();
+	public List<TrajectoryRecord> generateAllTrajectories(List<String> allDistinctMacs) {
 		List<TrajectoryRecord> alltrajectories = new ArrayList<TrajectoryRecord>();
-		distinctMacAddresses.stream().forEach(x -> {
+		allDistinctMacs.stream().forEach(x -> {
 			List<SingleRecord> routes = this.getByMacAddress(x);
 			alltrajectories.add(this.formTrajectoryByPointLocations(routes));
 		});
@@ -107,6 +114,35 @@ public class SingleRecordService {
 		List<SingleRecord> selected = new ArrayList<>(route.stream().collect(Collectors.toMap(SingleRecord::getZone, Function.identity(), (u1, u2) -> u1)).values());
 		trajectory.setPoints(selected);
 		return trajectory;
+	}
+
+	public List<SingleRecord> collectNoise(List<SingleRecord> route) {
+		TrajectoryRecord formedTrajectory = this.formTrajectoryByPointLocations(route);
+		List<SingleRecord> selected = formedTrajectory.getPoints();
+		List<SingleRecord> noise = route.stream().filter(i -> !selected.contains(i)).collect(Collectors.toList());
+		return noise;
+	}
+
+	@Transactional
+	public void removeNoiseFromDataset() {
+		List<String> distinctMacAddresses = this.getDistinctMacAdresses();
+		List<SingleRecord> route = new ArrayList<SingleRecord>();
+		List<List<SingleRecord>> allRoutes = new ArrayList<List<SingleRecord>>();
+		List<SingleRecord> noise = new ArrayList<SingleRecord>();
+		List<List<SingleRecord>> allNoise = new ArrayList<List<SingleRecord>>();
+		for (String mac : distinctMacAddresses) {
+			route = this.getByMacAddress(mac);
+			allRoutes.add(route);
+		}
+		for (List<SingleRecord> r : allRoutes) {
+			noise = this.collectNoise(r);
+			allNoise.add(noise);
+		}
+		for (List<SingleRecord> n : allNoise) {
+			for (SingleRecord foo : n) {
+				this.delete(foo);
+			}
+		}
 	}
 
 	public VisualTrajectoryRecord translateToVisualisedTrajectory(final TrajectoryRecord trajectory) {

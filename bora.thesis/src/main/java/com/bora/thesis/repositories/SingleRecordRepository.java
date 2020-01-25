@@ -19,6 +19,10 @@ import com.bora.thesis.dataaccess.SingleRecord;
 @Repository
 public class SingleRecordRepository extends BasicRepository implements SpringConfiguration {
 
+	public void delete(final SingleRecord record) {
+		entityManager.remove(record);
+	}
+
 	public List<SingleRecord> getAll() {
 		TypedQuery<SingleRecord> query = entityManager.createNamedQuery("SingleRecord.getAll", SingleRecord.class);
 		List<SingleRecord> list = query.getResultList();
