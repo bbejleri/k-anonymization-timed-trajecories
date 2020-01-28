@@ -1,9 +1,13 @@
 package com.bora.thesis.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -34,6 +38,15 @@ public class SingleRecordService {
 	@Transactional
 	public void delete(final SingleRecord record) {
 		this.singleRecordRepository.delete(record);
+	}
+
+	/**
+	 * @param keyExtractor
+	 * @return list of distinct {@link T} based on T attributes
+	 */
+	public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+		Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+		return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
 	}
 
 	public List<SingleRecord> getList() {
@@ -111,7 +124,7 @@ public class SingleRecordService {
 	 */
 	public TrajectoryRecord formTrajectoryByPointLocations(List<SingleRecord> route) {
 		TrajectoryRecord trajectory = new TrajectoryRecord();
-		List<SingleRecord> selected = new ArrayList<>(route.stream().collect(Collectors.toMap(SingleRecord::getZone, Function.identity(), (u1, u2) -> u1)).values());
+		List<SingleRecord> selected = route.stream().filter(distinctByKey(pr -> Arrays.asList(pr.getZone()))).collect(Collectors.toList());
 		trajectory.setPoints(selected);
 		return trajectory;
 	}

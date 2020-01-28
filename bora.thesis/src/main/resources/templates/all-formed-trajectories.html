@@ -49,16 +49,13 @@
             </div>            
             <div class="stats-div">          
                 <ul class="list-group">
-                    <li class="list-group-item active" th:text="'Total Trajectories: ' + ${totalTrajectories}"></li>
-                    <li class="list-group-item active" th:text="'Multiple-Location Trajectories: ' + ${multipleLocationTrajectories}"></li>
-                    <li class="list-group-item" th:text="'Single-Location Trajectories:'"></li>             
-                    <li class="list-group-item active" th:text="'A Trajectories: ' + ${aTrajectories}"></li>
-                    <li class="list-group-item active" th:text="'B Trajectories: ' + ${bTrajectories}"></li>
-                    <li class="list-group-item active" th:text="'C Trajectories: ' + ${cTrajectories}"></li>
-                    <li class="list-group-item active" th:text="'D Trajectories: ' + ${dTrajectories}"></li>
-                    <li class="list-group-item active" th:text="'E Trajectories: ' + ${eTrajectories}"></li>
-                    <li class="list-group-item active" th:text="'F Trajectories: ' + ${fTrajectories}"></li>
-                 </ul>             
+                    <li class="list-group-item active" th:text="'Total Trajectories: ' + ${totalTrajectories}"></li>                   
+                 </ul> 
+                 <ul class="list-group">
+                     <li class="list-group-item active" th:each="key: ${map.keySet()}">
+                         <span th:text="${key}"></span>: <span th:text="${map.get(key)}"></span>
+                     </li>
+                 </ul>            
             </div>
             <div class="row" style="margin-left: 30px; margin-top: 10px;">
             <a class="btn btn-danger" th:href="@{/cluster}" role="button" style="margin-right: 10px;">Cluster Trajectories</a>
