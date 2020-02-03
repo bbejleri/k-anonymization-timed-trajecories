@@ -29,10 +29,12 @@ public class ClusterRecordContoller {
 	public String doGetCluster(final Model model) {
 		List<String> distinctMacAddresses = this.singleRecordService.getDistinctMacAdresses();
 		List<TrajectoryRecord> alltrajectories = this.singleRecordService.generateAllTrajectories(distinctMacAddresses);
-		ClusterRecord r = this.clusterRecordService.kMemberAlgorithm(alltrajectories, 5);
-		// List<String> list = r.getTrajectories().stream().map(x ->
-		// this.singleRecordService.translateToVisualisedTrajectory(x).getInicalTrajectory()).collect(Collectors.toList());
-		// System.out.println(list);
+		// TrajectoryRecord entry = this.clusterRecordService.getRandomTrajectory(alltrajectories);
+		// VisualTrajectoryRecord visualEntry = this.singleRecordService.translateToVisualisedTrajectory(entry);
+		// final TrajectoryRecord furthiestRecord = this.clusterRecordService.getFurthiestRecord(alltrajectories, visualEntry);
+		// System.out.println(visualEntry.getInicalTrajectory());
+		// System.out.println(this.singleRecordService.translateToVisualisedTrajectory(furthiestRecord).getInicalTrajectory());
+		final ClusterRecord cluster = this.clusterRecordService.createClusterWithKElements(alltrajectories, 10);
 		return "cluster-record-view";
 	}
 }

@@ -137,6 +137,22 @@ public class SingleRecordService {
 	}
 
 	@Transactional
+	public void removeSinglesFromDataset() {
+		List<String> distinctMacAddresses = this.getDistinctMacAdresses();
+		List<SingleRecord> route = new ArrayList<SingleRecord>();
+		List<List<SingleRecord>> allRoutes = new ArrayList<List<SingleRecord>>();
+		for (String mac : distinctMacAddresses) {
+			route = this.getByMacAddress(mac);
+			allRoutes.add(route);
+		}
+		for (List<SingleRecord> r : allRoutes) {
+			if (r.size() == 1) {
+				this.delete(r.get(0));
+			}
+		}
+	}
+
+	@Transactional
 	public void removeNoiseFromDataset() {
 		List<String> distinctMacAddresses = this.getDistinctMacAdresses();
 		List<SingleRecord> route = new ArrayList<SingleRecord>();

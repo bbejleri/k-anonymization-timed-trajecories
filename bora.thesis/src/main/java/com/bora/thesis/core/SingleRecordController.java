@@ -45,7 +45,7 @@ public class SingleRecordController {
 		model.addAttribute("distinctvendors", records.stream().map(x -> x.getTruncmac()).distinct().count());
 		model.addAttribute("hours", hours);
 		model.addAttribute("zones", zones);
-		model.addAttribute("list", records.subList(0, 100));
+		model.addAttribute("list", records);
 		return "main";
 	}
 
@@ -100,6 +100,12 @@ public class SingleRecordController {
 	@RequestMapping(value = "/remove/noise", method = RequestMethod.GET)
 	public String removeNoiseFromRecords(final Model model) {
 		this.singleRecordService.removeNoiseFromDataset();
+		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/remove/singles", method = RequestMethod.GET)
+	public String removeSingles(final Model model) {
+		this.singleRecordService.removeSinglesFromDataset();
 		return "redirect:/";
 	}
 }
