@@ -13,19 +13,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/104/three.js"></script>
 </head>
 <body>
-<div class="container" style="margin: 30px;"> 
-     <div class="row">
-         <h4 style="margin: 30px;"> <span class="badge badge-secondary">All Clusters </span></h4>   
-    </div>
+<div class="container">
+   <div class="row">
+     <h4 style="margin: 30px;">All Trajectories of Cluster: <span class="badge badge-secondary" th:text="${id}"></span></h4>   
+   </div>
     <div class="row">
-        <div class="col">        
-        <div class="list-group" th:each="entry : ${clusters}">
-                <a th:href="@{'/cluster/' + ${entry.id}}" class="list-group-item list-group-item-action" th:text="'Cluster: ' + ${entry.id}"></a>             
-            </div>            
-        </div>
-        <div class="col">          
-        </div>
-     </div>   
+        <div class="col-9">
+           <table class="table">
+              <tr>
+                  <th scope="col">Symbolic trajectories</th>
+                  <th scope="col">Named trajectories (time)</th>
+                  <th scope="col">Trajectories by Initials</th>                 
+               </tr>
+               <tbody>
+                <tr th:each="entry: ${visuals}">
+                    <td th:text="*{entry.vizualizedTrajectory}"></td>
+                    <td th:text="*{entry.namedTrajectory}"></td>
+                    <td th:text="*{entry.inicalTrajectory}"></td>
+               </tr>           
+               </tbody>
+          </table>    
+     </div>            
+     </div> 
 </div>
    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>

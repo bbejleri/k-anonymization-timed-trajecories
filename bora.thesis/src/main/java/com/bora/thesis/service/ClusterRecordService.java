@@ -99,13 +99,13 @@ public class ClusterRecordService {
 			final VisualTrajectoryRecord visualTrajectoryRecord = this.singleRecordService.translateToVisualisedTrajectory(record);
 			if (this.calculateLCSSSimilarity(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory()) == this.minDistance(allDistances)) {
 				bestNeighbour = this.getMinimalInitials(visualTrajectoryRecord, alltrajectories);
-				// TODO: Fix NullPointerException!
 			}
 		}
 		return bestNeighbour;
 	}
 
-	public ClusterRecord createClusterWithKElements(final List<TrajectoryRecord> alltrajectories, int k) {
+	public ClusterRecord createClusterWithKElements(final List<TrajectoryRecord> alltrajectories, final int k) {
+		final ClusterRecord cluster = new ClusterRecord();
 		final TrajectoryRecord randomTrajectory = this.getRandomTrajectory(alltrajectories);
 		final VisualTrajectoryRecord visualRandomTrajectory = this.singleRecordService.translateToVisualisedTrajectory(randomTrajectory);
 		final TrajectoryRecord furthiestRecord = this.getFurthiestRecord(alltrajectories, visualRandomTrajectory);
@@ -117,15 +117,30 @@ public class ClusterRecordService {
 			clusterTrajectories.add(bestNeighbour);
 			alltrajectories.remove(bestNeighbour);
 		}
-		final List<VisualTrajectoryRecord> visualTrajectories = new ArrayList<VisualTrajectoryRecord>();
-		for (TrajectoryRecord record : clusterTrajectories) {
-			visualTrajectories.add(this.singleRecordService.translateToVisualisedTrajectory(record));
+		cluster.setTrajectories(clusterTrajectories);
+		return cluster;
+	}
+
+	public List<ClusterRecord> kMember(final int k) {
+		final List<TrajectoryRecord> alltrajectories = this.singleRecordService.generateAllTrajectories();
+		final List<ClusterRecord> clusters = new ArrayList<ClusterRecord>();
+		int count = 1;
+		while (alltrajectories.size() > k) {
+			ClusterRecord cluster = this.createClusterWithKElements(alltrajectories, k);
+			cluster.setId(count);
+			clusters.add(cluster);
+			count++;
 		}
-		System.out.println("------------");
-		for (VisualTrajectoryRecord v : visualTrajectories) {
-			System.out.println(v.getInicalTrajectory());
+		return clusters;
+	}
+
+	public List<TrajectoryRecord> getClusterById(final int id) {
+		List<ClusterRecord> clusters = this.kMember(20);
+		for (ClusterRecord c : clusters) {
+			if (c.getId() == id) {
+				return c.getTrajectories();
+			}
 		}
-		System.out.println("------------");
 		return null;
 	}
 }

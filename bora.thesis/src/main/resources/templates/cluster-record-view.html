@@ -13,9 +13,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/104/three.js"></script>
 </head>
 <body>
-<div class="container"> 
+<div class="container" style="margin: 30px;"> 
+     <div class="row">
+         <h4 style="margin: 30px;"> <span class="badge badge-secondary">All Clusters </span></h4>   
+    </div>
     <div class="row">
-        <div class="col">              
+        <div class="col">        
+        <div class="list-group" th:each="entry : ${clusters}">
+                <a th:href="@{'/cluster/' + ${entry.id}}" class="list-group-item list-group-item-action" th:text="'Cluster: ' + ${entry.id}"></a>             
+            </div>            
         </div>
         <div class="col">          
         </div>

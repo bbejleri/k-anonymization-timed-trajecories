@@ -93,7 +93,8 @@ public class SingleRecordService {
 		return zones;
 	}
 
-	public List<TrajectoryRecord> generateAllTrajectories(List<String> allDistinctMacs) {
+	public List<TrajectoryRecord> generateAllTrajectories() {
+		List<String> allDistinctMacs = this.getDistinctMacAdresses();
 		List<TrajectoryRecord> alltrajectories = new ArrayList<TrajectoryRecord>();
 		allDistinctMacs.stream().forEach(x -> {
 			List<SingleRecord> routes = this.getByMacAddress(x);
