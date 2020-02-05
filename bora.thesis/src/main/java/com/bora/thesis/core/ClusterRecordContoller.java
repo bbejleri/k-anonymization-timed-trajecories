@@ -29,7 +29,7 @@ public class ClusterRecordContoller {
 	public String doGetCluster(final Model model) {
 		List<String> distinctMacAddresses = this.singleRecordService.getDistinctMacAdresses();
 		List<TrajectoryRecord> alltrajectories = this.singleRecordService.generateAllTrajectories(distinctMacAddresses);
-		// TrajectoryRecord entry = this.clusterRecordService.getRandomTrajectory(alltrajectories);
+		TrajectoryRecord entry = this.clusterRecordService.getRandomTrajectory(alltrajectories);
 		// VisualTrajectoryRecord visualEntry = this.singleRecordService.translateToVisualisedTrajectory(entry);
 		// final TrajectoryRecord furthiestRecord = this.clusterRecordService.getFurthiestRecord(alltrajectories, visualEntry);
 		// System.out.println(visualEntry.getInicalTrajectory());

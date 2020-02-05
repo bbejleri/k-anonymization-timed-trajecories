@@ -41,7 +41,7 @@ public class ClusterRecordService {
 		return Collections.max(distances);
 	}
 
-	private TrajectoryRecord getMinimalInitials(final VisualTrajectoryRecord entryPoint, final List<TrajectoryRecord> allTrajectories) {
+	public TrajectoryRecord getMinimalInitials(final VisualTrajectoryRecord entryPoint, final List<TrajectoryRecord> allTrajectories) {
 		TrajectoryRecord rightRecord = null;
 		List<Character> entryPointChars = entryPoint.getInicalTrajectory().chars().mapToObj(x -> (char) x).collect(Collectors.toList());
 		int count = entryPointChars.size();
@@ -51,8 +51,6 @@ public class ClusterRecordService {
 			if (count == recordChars.size()) {
 				rightRecord = record;
 				break;
-			} else {
-				count++;
 			}
 		}
 		return rightRecord;
