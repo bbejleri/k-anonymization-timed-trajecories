@@ -30,13 +30,23 @@ public class ClusterRecordContoller {
 
 	@RequestMapping(value = "/cluster", method = RequestMethod.GET)
 	public String doGetCluster(final Model model) {
-		List<ClusterRecord> clusters = this.clusterRecordService.kMember(20);
+		List<ClusterRecord> clusters = this.clusterRecordService.kMember(10);
 		model.addAttribute("clusters", clusters);
 		return "cluster-record-view";
 	}
 
+	@RequestMapping(value = "/allclusters", method = RequestMethod.GET)
+	public String doGetAllCluster(final Model model) {
+		List<ClusterRecord> clusters = this.clusterRecordService.kMember(5);
+		List<TrajectoryRecord> list = new ArrayList<TrajectoryRecord>();
+		List<VisualTrajectoryRecord> visuals = new ArrayList<VisualTrajectoryRecord>();
+		this.clusterRecordService.getAllClusterTrajectories();
+		model.addAttribute("clusters", clusters);
+		return "all-clusters";
+	}
+
 	@RequestMapping(value = "/cluster/{id}", method = RequestMethod.GET)
-	public String doGetRouts(final Model model, @PathVariable("id") int id) {
+	public String doGetClusters(final Model model, @PathVariable("id") int id) {
 		List<TrajectoryRecord> list = this.clusterRecordService.getClusterById(id);
 		List<VisualTrajectoryRecord> visuals = new ArrayList<VisualTrajectoryRecord>();
 		for (TrajectoryRecord record : list) {

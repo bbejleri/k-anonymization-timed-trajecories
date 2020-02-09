@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -13,7 +14,7 @@ import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 /**
  * @author bora
  */
-@SpringBootApplication(exclude = { ErrorMvcAutoConfiguration.class })
+@SpringBootApplication(exclude = { ErrorMvcAutoConfiguration.class, SecurityAutoConfiguration.class })
 public class Application extends SpringBootServletInitializer {
 
 	@Override

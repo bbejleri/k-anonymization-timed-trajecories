@@ -1,5 +1,6 @@
 package com.bora.thesis.dataaccess;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,6 +9,10 @@ import java.util.List;
 public class TrajectoryRecord {
 
 	private List<SingleRecord> points;
+
+	public TrajectoryRecord() {
+		points = new ArrayList<SingleRecord>();
+	}
 
 	/**
 	 * @return the points

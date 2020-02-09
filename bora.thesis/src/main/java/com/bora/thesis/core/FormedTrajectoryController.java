@@ -40,8 +40,6 @@ public class FormedTrajectoryController {
 		trajectoryRecords.stream().forEach(t -> {
 			visuals.add(this.singleRecordService.translateToVisualisedTrajectory(t));
 		});
-		// List<VisualTrajectoryRecord> visualssorted = visuals.stream().sorted((o1, o2) ->
-		// o1.getNamedTrajectory().compareTo(o2.getNamedTrajectory())).collect(Collectors.toList());
 		final HashMap<String, Integer> initialsMap = this.visualTrajectoryRecordService.countDistinctInitialTrajectories(visuals);
 		model.addAttribute("distinctMacAddresses", distinctMacAddresses);
 		model.addAttribute("map", initialsMap);

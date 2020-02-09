@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bora.thesis.dataaccess.ClusterRecord;
+import com.bora.thesis.dataaccess.SingleRecord;
 import com.bora.thesis.dataaccess.TrajectoryRecord;
 import com.bora.thesis.dataaccess.VisualTrajectoryRecord;
 
@@ -25,6 +27,9 @@ public class ClusterRecordService {
 	@Autowired
 	private ParentService parentService;
 
+	@Autowired
+	private HelperService helperService;
+
 	public TrajectoryRecord getRandomTrajectory(List<TrajectoryRecord> trajectories) {
 		return trajectories.get(new Random().nextInt(trajectories.size()));
 	}
@@ -37,8 +42,8 @@ public class ClusterRecordService {
 		return Collections.min(distances);
 	}
 
-	private int minDistance(List<Integer> distances) {
-		return Collections.max(distances);
+	private long minDistance(final String string) {
+		return string.chars().mapToObj(ch -> (char) ch).count();
 	}
 
 	public TrajectoryRecord getMinimalInitials(final VisualTrajectoryRecord entryPoint, final List<TrajectoryRecord> allTrajectories) {
@@ -54,6 +59,16 @@ public class ClusterRecordService {
 			}
 		}
 		return rightRecord;
+	}
+
+	public boolean sameNumberOfPoints(final String s1, final String s2) {
+		boolean same = Boolean.FALSE;
+		long points1 = s1.chars().mapToObj(x -> (char) x).count();
+		long points2 = s2.chars().mapToObj(x -> (char) x).count();
+		if (points1 == points2) {
+			same = Boolean.TRUE;
+		}
+		return same;
 	}
 
 	/**
@@ -88,37 +103,34 @@ public class ClusterRecordService {
 	 * @return bestNeighbour
 	 */
 	public TrajectoryRecord findBestNeighbour(final List<TrajectoryRecord> alltrajectories, final TrajectoryRecord furthiestRecord) {
-		TrajectoryRecord bestNeighbour = new TrajectoryRecord();
 		final VisualTrajectoryRecord furthiestRecordVisual = this.singleRecordService.translateToVisualisedTrajectory(furthiestRecord);
-		final List<VisualTrajectoryRecord> visualTrajectories = alltrajectories.stream().map(x -> this.singleRecordService.translateToVisualisedTrajectory(x))
-				.collect(Collectors.toList());
-		final List<String> initialTrajectories = visualTrajectories.stream().map(y -> y.getInicalTrajectory()).collect(Collectors.toList());
-		final List<Integer> allDistances = initialTrajectories.stream().map(k -> this.calculateLCSSSimilarity(k, furthiestRecordVisual.getInicalTrajectory()))
-				.collect(Collectors.toList());
 		for (TrajectoryRecord record : alltrajectories) {
 			final VisualTrajectoryRecord visualTrajectoryRecord = this.singleRecordService.translateToVisualisedTrajectory(record);
-			if (this.calculateLCSSSimilarity(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory()) == this.minDistance(allDistances)) {
-				bestNeighbour = this.getMinimalInitials(visualTrajectoryRecord, alltrajectories);
+			if (this.sameNumberOfPoints(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory())) {
+				if (this.helperService.isAnagramSort(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory())) {
+					return record;
+				}
 			}
 		}
-		return bestNeighbour;
+		return null;
 	}
 
 	public ClusterRecord createClusterWithKElements(final List<TrajectoryRecord> alltrajectories, final int k) {
-		final ClusterRecord cluster = new ClusterRecord();
 		final TrajectoryRecord randomTrajectory = this.getRandomTrajectory(alltrajectories);
 		final VisualTrajectoryRecord visualRandomTrajectory = this.singleRecordService.translateToVisualisedTrajectory(randomTrajectory);
 		final TrajectoryRecord furthiestRecord = this.getFurthiestRecord(alltrajectories, visualRandomTrajectory);
 		final List<TrajectoryRecord> clusterTrajectories = new ArrayList<TrajectoryRecord>();
-		clusterTrajectories.add(furthiestRecord);
 		alltrajectories.remove(randomTrajectory);
-		for (int i = 1; i < k; i++) {
-			TrajectoryRecord bestNeighbour = this.findBestNeighbour(alltrajectories, furthiestRecord);
-			clusterTrajectories.add(bestNeighbour);
-			alltrajectories.remove(bestNeighbour);
+		while (this.findBestNeighbour(alltrajectories, furthiestRecord) != null) {
+			clusterTrajectories.add(this.findBestNeighbour(alltrajectories, furthiestRecord));
+			alltrajectories.remove(this.findBestNeighbour(alltrajectories, furthiestRecord));
 		}
-		cluster.setTrajectories(clusterTrajectories);
-		return cluster;
+		if (clusterTrajectories.size() >= k) {
+			ClusterRecord cluster = new ClusterRecord();
+			cluster.setTrajectories(clusterTrajectories);
+			return cluster;
+		}
+		return null;
 	}
 
 	public List<ClusterRecord> kMember(final int k) {
@@ -127,15 +139,34 @@ public class ClusterRecordService {
 		int count = 1;
 		while (alltrajectories.size() > k) {
 			ClusterRecord cluster = this.createClusterWithKElements(alltrajectories, k);
-			cluster.setId(count);
-			clusters.add(cluster);
-			count++;
+			if (cluster != null && cluster.getTrajectories().size() >= k) {
+				cluster.setId(count);
+				clusters.add(cluster);
+				count++;
+			}
 		}
 		return clusters;
 	}
 
+	public List<TrajectoryRecord> getAllClusterTrajectories() {
+		List<ClusterRecord> clusters = this.kMember(5);
+		List<TrajectoryRecord> list = new ArrayList<TrajectoryRecord>();
+		for (ClusterRecord c : clusters) {
+			for (TrajectoryRecord t : c.getTrajectories()) {
+				if (t.getPoints() != null && !t.getPoints().isEmpty()) {
+					for (SingleRecord s : t.getPoints()) {
+						if (ObjectUtils.allNotNull(s)) {
+							list.add(t);
+						}
+					}
+				}
+			}
+		}
+		return list;
+	}
+
 	public List<TrajectoryRecord> getClusterById(final int id) {
-		List<ClusterRecord> clusters = this.kMember(20);
+		List<ClusterRecord> clusters = this.kMember(5);
 		for (ClusterRecord c : clusters) {
 			if (c.getId() == id) {
 				return c.getTrajectories();

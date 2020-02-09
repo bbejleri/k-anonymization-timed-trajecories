@@ -187,7 +187,8 @@ public class SingleRecordService {
 		VisualTrajectoryRecord visualTrajectoryRecord = new VisualTrajectoryRecord();
 		for (SingleRecord point : trajectory.getPoints()) {
 			visualised = sb.append(" -> ").append(point.getZone()).toString();
-			named = sb1.append(" -> ").append(zoneNames.get(point.getZone())).append(" (").append(point.getTimestamp()).append(") ").toString();
+			named = sb1.append(" -> ").append(zoneNames.get(point.getZone())).append(" (").append(point.getTimestamp().substring(11, point.getTimestamp().length() - 7)).append(") ")
+					.toString();
 			initialized = sb2.append(zoneInicials.get(point.getZone())).toString();
 		}
 		visualTrajectoryRecord.setVizualizedTrajectory(visualised);
