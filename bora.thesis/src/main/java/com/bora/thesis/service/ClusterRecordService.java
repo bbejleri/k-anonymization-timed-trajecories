@@ -6,12 +6,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bora.thesis.dataaccess.ClusterRecord;
-import com.bora.thesis.dataaccess.SingleRecord;
+import com.bora.thesis.dataaccess.ClusterWrapper;
 import com.bora.thesis.dataaccess.TrajectoryRecord;
 import com.bora.thesis.dataaccess.VisualTrajectoryRecord;
 
@@ -107,7 +106,8 @@ public class ClusterRecordService {
 		for (TrajectoryRecord record : alltrajectories) {
 			final VisualTrajectoryRecord visualTrajectoryRecord = this.singleRecordService.translateToVisualisedTrajectory(record);
 			if (this.sameNumberOfPoints(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory())) {
-				if (this.helperService.isAnagramSort(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory())) {
+				if (this.calculateLCSSSimilarity(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory()) == this
+						.minDistance(furthiestRecordVisual.getInicalTrajectory())) {
 					return record;
 				}
 			}
@@ -148,21 +148,20 @@ public class ClusterRecordService {
 		return clusters;
 	}
 
-	public List<TrajectoryRecord> getAllClusterTrajectories() {
-		List<ClusterRecord> clusters = this.kMember(5);
-		List<TrajectoryRecord> list = new ArrayList<TrajectoryRecord>();
+	public List<ClusterWrapper> getAllClusterTrajectories() {
+		List<ClusterWrapper> clusterwrappers = new ArrayList<ClusterWrapper>();
+		final List<ClusterRecord> clusters = this.kMember(5);
 		for (ClusterRecord c : clusters) {
+			ClusterWrapper clusterwrapper = new ClusterWrapper();
+			clusterwrapper.setId(c.getId());
+			List<VisualTrajectoryRecord> visuals = new ArrayList<VisualTrajectoryRecord>();
 			for (TrajectoryRecord t : c.getTrajectories()) {
-				if (t.getPoints() != null && !t.getPoints().isEmpty()) {
-					for (SingleRecord s : t.getPoints()) {
-						if (ObjectUtils.allNotNull(s)) {
-							list.add(t);
-						}
-					}
-				}
+				visuals.add(this.singleRecordService.translateToVisualisedTrajectory(t));
 			}
+			clusterwrapper.setVisualtrajectories(visuals);
+			clusterwrappers.add(clusterwrapper);
 		}
-		return list;
+		return clusterwrappers;
 	}
 
 	public List<TrajectoryRecord> getClusterById(final int id) {

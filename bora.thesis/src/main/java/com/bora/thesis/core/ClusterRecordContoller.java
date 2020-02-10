@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.bora.thesis.dataaccess.ClusterRecord;
+import com.bora.thesis.dataaccess.ClusterWrapper;
 import com.bora.thesis.dataaccess.TrajectoryRecord;
 import com.bora.thesis.dataaccess.VisualTrajectoryRecord;
 import com.bora.thesis.service.ClusterRecordService;
@@ -37,11 +38,8 @@ public class ClusterRecordContoller {
 
 	@RequestMapping(value = "/allclusters", method = RequestMethod.GET)
 	public String doGetAllCluster(final Model model) {
-		List<ClusterRecord> clusters = this.clusterRecordService.kMember(5);
-		List<TrajectoryRecord> list = new ArrayList<TrajectoryRecord>();
-		List<VisualTrajectoryRecord> visuals = new ArrayList<VisualTrajectoryRecord>();
-		this.clusterRecordService.getAllClusterTrajectories();
-		model.addAttribute("clusters", clusters);
+		List<ClusterWrapper> wrappers = this.clusterRecordService.getAllClusterTrajectories();
+		model.addAttribute("wrappers", wrappers);
 		return "all-clusters";
 	}
 
