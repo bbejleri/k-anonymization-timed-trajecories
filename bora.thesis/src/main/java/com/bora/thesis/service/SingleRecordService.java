@@ -187,33 +187,13 @@ public class SingleRecordService {
 		VisualTrajectoryRecord visualTrajectoryRecord = new VisualTrajectoryRecord();
 		for (SingleRecord point : trajectory.getPoints()) {
 			visualised = sb.append(" -> ").append(point.getZone()).toString();
-			named = sb1.append(" -> ").append(zoneNames.get(point.getZone())).append(" (").append(point.getTimestamp().substring(11, point.getTimestamp().length() - 7)).append(") ")
-					.toString();
+			named = sb1.append(" -> ").append(zoneNames.get(point.getZone())).append(" (").append(point.getTimestamp()).append(") ").toString();
 			initialized = sb2.append(zoneInicials.get(point.getZone())).toString();
 		}
 		visualTrajectoryRecord.setVizualizedTrajectory(visualised);
 		visualTrajectoryRecord.setNamedTrajectory(named);
 		visualTrajectoryRecord.setInicalTrajectory(initialized);
 		return visualTrajectoryRecord;
-	}
-
-	public TrajectoryRecord translateToTrajectoryRecord(final VisualTrajectoryRecord visualTrajectoryRecord) {
-		final TrajectoryRecord finalTrajectory = new TrajectoryRecord();
-		final List<Character> chars = visualTrajectoryRecord.getInicalTrajectory().chars().mapToObj(ch -> (char) ch).collect(Collectors.toList());
-		final List<String> zones = new ArrayList<String>();
-		final List<SingleRecord> singleRecords = new ArrayList<SingleRecord>();
-		for (Character ch : chars) {
-			zones.add(this.getSymbolicZones().get(ch));
-		}
-		for (String zone : zones) {
-			singleRecords.add(this.getBySingleZone(zone));
-		}
-		finalTrajectory.setPoints(singleRecords);
-		return finalTrajectory;
-	}
-
-	private SingleRecord getBySingleZone(String zone) {
-		return this.singleRecordRepository.getBySingleZone(zone);
 	}
 
 	public HashMap<String, String> getZoneInicials() {
@@ -254,5 +234,27 @@ public class SingleRecordService {
 		this.getList().stream().forEach(x -> {
 			this.singleRecordRepository.updateTimestamp(this.helperService.removeLastChars(x.getTimestamp()), x.getTrackid(), this.getById(x.getTrackid()));
 		});
+	}
+
+	public TrajectoryRecord removeObsoletePoint(final String centroid, final TrajectoryRecord trajectory) {
+		final String initialTrajectory = this.translateToVisualisedTrajectory(trajectory).getInicalTrajectory();
+		final List<Character> chars1 = centroid.chars().mapToObj(x -> (char) x).collect(Collectors.toList());
+		final List<Character> chars2 = initialTrajectory.chars().mapToObj(x -> (char) x).collect(Collectors.toList());
+		final HashMap<String, String> map = this.getSymbolicZones();
+		String pointstring = new String();
+		for (Character ch : chars2) {
+			if (!chars1.contains(ch)) {
+				pointstring = ch.toString();
+			}
+			break;
+		}
+		for (int i = 0; i < trajectory.getPoints().size();) {
+			// TODO: FIX REMOVE
+			if (trajectory.getPoints().get(i).getZone().equalsIgnoreCase(map.get(pointstring))) {
+				trajectory.getPoints().remove(i);
+			}
+			break;
+		}
+		return trajectory;
 	}
 }

@@ -7,9 +7,18 @@ import java.util.List;
  */
 public class ClusterRecord {
 
+	private String centroid;
+
 	private long id;
 
 	private List<TrajectoryRecord> trajectories;
+
+	/**
+	 * @return the centroid
+	 */
+	public String getCentroid() {
+		return centroid;
+	}
 
 	/**
 	 * @return the id
@@ -23,6 +32,14 @@ public class ClusterRecord {
 	 */
 	public List<TrajectoryRecord> getTrajectories() {
 		return trajectories;
+	}
+
+	/**
+	 * @param centroid
+	 *           the centroid to set
+	 */
+	public void setCentroid(String centroid) {
+		this.centroid = centroid;
 	}
 
 	/**

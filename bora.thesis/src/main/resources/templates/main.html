@@ -23,7 +23,6 @@
               <tr>
                   <th scope="col">Track ID</th>
                   <th scope="col">Zone</th>
-                  <th scope="col">Event Type</th>
                   <th scope="col">Hashmac</th>
                   <th scope="col">Timestamp</th>
                   <th scope="col">MAC</th>
@@ -32,7 +31,6 @@
                 <tr th:each="entry: ${list}">
                     <td th:text="*{entry.trackid}"></td>
                     <td th:text="*{entry.zone}"></td>
-                    <td th:text="*{entry.eventtype} == 0 ? 'Enterd' : 'Left'"></td>
                     <td th:text="*{entry.hashMac}"></td>
                     <td th:text="*{entry.timestamp}"></td>
                     <td th:text="*{entry.truncmac}"></td>
@@ -43,9 +41,9 @@
         <div class="col" style="margin-top: 5%;">
                 <a class="btn btn-danger" th:href="@{/remove/noise}">Clear Noise From Dataset</a><br><br>
                 <a class="btn btn-danger" th:href="@{/remove/singles}">Clear Singles</a><br><br>
-                <a class="btn btn-info" th:href="@{/index}">Show Distinct MACs</a>
-                <a class="btn btn-info" th:href="@{/entered}">Show All Entered Zones</a>
-                <a class="btn btn-info" th:href="@{/left}">Show All Left Zones</a>
+                <a class="btn btn-info" th:href="@{/index}">Show Distinct MACs</a><br>
+                <a class="btn btn-info" th:href="@{/entered}">Show All Entered Zones</a><br>
+                <a class="btn btn-info" th:href="@{/left}">Show All Left Zones</a><br>
                 <div class="btn-group dropleft">
                     <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Filter by Zone
@@ -53,7 +51,7 @@
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" th:each="entry: ${zones}" th:name="zone" th:value="${entry}" th:href="@{'/zone/' + ${entry}}" th:text="${entry}"></a>
                     </div>
-                </div>
+                </div><br>
                 <div class="btn-group dropleft">
                     <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Filter Hourly
@@ -67,8 +65,6 @@
                     <li class="list-group-item active" th:text="'Total Entries: ' + ${totalentries}"></li>
                     <li class="list-group-item active" th:text="'Nr. of distinct entries: ' + ${distinctmacs}"></li>
                     <li class="list-group-item active" th:text="' Nr. of distinct zones: ' + ${distinctzones}"></li>
-                    <li class="list-group-item active" th:text="'Nr. of entered locations: ' + ${totalentered}"></li>
-                    <li class="list-group-item active" th:text="'Nr. of left locations: ' + ${totalleft}"></li>
                     <li class="list-group-item active" th:text="'Nr. of distinct vendors: ' + ${distinctvendors} "></li>
                  </ul>             
             </div>

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +26,6 @@ public class ClusterRecordService {
 
 	@Autowired
 	private ParentService parentService;
-
-	@Autowired
-	private HelperService helperService;
 
 	public TrajectoryRecord getRandomTrajectory(List<TrajectoryRecord> trajectories) {
 		return trajectories.get(new Random().nextInt(trajectories.size()));
@@ -115,34 +113,54 @@ public class ClusterRecordService {
 		return null;
 	}
 
+	// ACB AB
+	public ClusterRecord findBestCluster(final List<ClusterRecord> clusters, final TrajectoryRecord trajectory) {
+		final String trajectoryInitials = this.singleRecordService.translateToVisualisedTrajectory(trajectory).getInicalTrajectory();
+		for (ClusterRecord cluster : clusters) {
+			if (this.calculateLCSSSimilarity(cluster.getCentroid(), trajectoryInitials) == this.minDistance(trajectoryInitials) - 1) {
+				return cluster;
+			}
+		}
+		return null;
+	}
+
 	public ClusterRecord createClusterWithKElements(final List<TrajectoryRecord> alltrajectories, final int k) {
 		final TrajectoryRecord randomTrajectory = this.getRandomTrajectory(alltrajectories);
 		final VisualTrajectoryRecord visualRandomTrajectory = this.singleRecordService.translateToVisualisedTrajectory(randomTrajectory);
 		final TrajectoryRecord furthiestRecord = this.getFurthiestRecord(alltrajectories, visualRandomTrajectory);
 		final List<TrajectoryRecord> clusterTrajectories = new ArrayList<TrajectoryRecord>();
+		ClusterRecord cluster = new ClusterRecord();
 		alltrajectories.remove(randomTrajectory);
 		while (this.findBestNeighbour(alltrajectories, furthiestRecord) != null) {
 			clusterTrajectories.add(this.findBestNeighbour(alltrajectories, furthiestRecord));
 			alltrajectories.remove(this.findBestNeighbour(alltrajectories, furthiestRecord));
 		}
-		if (clusterTrajectories.size() >= k) {
-			ClusterRecord cluster = new ClusterRecord();
-			cluster.setTrajectories(clusterTrajectories);
-			return cluster;
-		}
-		return null;
+		cluster.setCentroid(this.singleRecordService.translateToVisualisedTrajectory(clusterTrajectories.get(0)).getInicalTrajectory());
+		cluster.setTrajectories(clusterTrajectories);
+		return cluster;
 	}
 
 	public List<ClusterRecord> kMember(final int k) {
 		final List<TrajectoryRecord> alltrajectories = this.singleRecordService.generateAllTrajectories();
 		final List<ClusterRecord> clusters = new ArrayList<ClusterRecord>();
 		int count = 1;
-		while (alltrajectories.size() > k) {
+		while (alltrajectories.size() >= k) {
 			ClusterRecord cluster = this.createClusterWithKElements(alltrajectories, k);
-			if (cluster != null && cluster.getTrajectories().size() >= k) {
+			if (cluster.getTrajectories().size() > k) {
 				cluster.setId(count);
 				clusters.add(cluster);
 				count++;
+			} else {
+				for (TrajectoryRecord trajectory : cluster.getTrajectories()) {
+					cluster = this.findBestCluster(clusters, trajectory);
+					if (ObjectUtils.isNotEmpty(cluster)) {
+						final long centroidLength = cluster.getCentroid().chars().count();
+						final long initialsLength = this.singleRecordService.translateToVisualisedTrajectory(trajectory).getInicalTrajectory().chars().count();
+						if (initialsLength - centroidLength > 0) {
+							cluster.getTrajectories().add(this.singleRecordService.removeObsoletePoint(cluster.getCentroid(), trajectory));
+						}
+					}
+				}
 			}
 		}
 		return clusters;
@@ -155,10 +173,13 @@ public class ClusterRecordService {
 			ClusterWrapper clusterwrapper = new ClusterWrapper();
 			clusterwrapper.setId(c.getId());
 			List<VisualTrajectoryRecord> visuals = new ArrayList<VisualTrajectoryRecord>();
+			List<TrajectoryRecord> trajectories = new ArrayList<TrajectoryRecord>();
 			for (TrajectoryRecord t : c.getTrajectories()) {
 				visuals.add(this.singleRecordService.translateToVisualisedTrajectory(t));
+				trajectories.add(t);
 			}
 			clusterwrapper.setVisualtrajectories(visuals);
+			clusterwrapper.setTrajectoryRecords(trajectories);
 			clusterwrappers.add(clusterwrapper);
 		}
 		return clusterwrappers;

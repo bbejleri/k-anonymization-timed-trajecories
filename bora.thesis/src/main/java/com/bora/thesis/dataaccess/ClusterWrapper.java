@@ -5,17 +5,30 @@ import java.util.List;
 /**
  * @author: bora
  */
+/**
+ * @author User
+ *
+ */
 public class ClusterWrapper {
 
 	private long id;
 
 	private List<VisualTrajectoryRecord> visualtrajectories;
 
+	private List<TrajectoryRecord> trajectoryRecords;
+
 	/**
 	 * @return the id
 	 */
 	public long getId() {
 		return id;
+	}
+
+	/**
+	 * @return the trajectoryRecords
+	 */
+	public List<TrajectoryRecord> getTrajectoryRecords() {
+		return trajectoryRecords;
 	}
 
 	/**
@@ -31,6 +44,14 @@ public class ClusterWrapper {
 	 */
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	/**
+	 * @param trajectoryRecords
+	 *           the trajectoryRecords to set
+	 */
+	public void setTrajectoryRecords(List<TrajectoryRecord> trajectoryRecords) {
+		this.trajectoryRecords = trajectoryRecords;
 	}
 
 	/**

@@ -31,7 +31,7 @@ public class ClusterRecordContoller {
 
 	@RequestMapping(value = "/cluster", method = RequestMethod.GET)
 	public String doGetCluster(final Model model) {
-		List<ClusterRecord> clusters = this.clusterRecordService.kMember(10);
+		List<ClusterRecord> clusters = this.clusterRecordService.kMember(5);
 		model.addAttribute("clusters", clusters);
 		return "cluster-record-view";
 	}
@@ -41,6 +41,11 @@ public class ClusterRecordContoller {
 		List<ClusterWrapper> wrappers = this.clusterRecordService.getAllClusterTrajectories();
 		model.addAttribute("wrappers", wrappers);
 		return "all-clusters";
+	}
+
+	@RequestMapping(value = "/findbestcluster", method = RequestMethod.GET)
+	public String doGetBestCluster(final Model model) {
+		return "all-not-clustered";
 	}
 
 	@RequestMapping(value = "/cluster/{id}", method = RequestMethod.GET)
