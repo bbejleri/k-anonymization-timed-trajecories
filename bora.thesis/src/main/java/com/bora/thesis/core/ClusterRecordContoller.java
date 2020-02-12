@@ -43,11 +43,6 @@ public class ClusterRecordContoller {
 		return "all-clusters";
 	}
 
-	@RequestMapping(value = "/findbestcluster", method = RequestMethod.GET)
-	public String doGetBestCluster(final Model model) {
-		return "all-not-clustered";
-	}
-
 	@RequestMapping(value = "/cluster/{id}", method = RequestMethod.GET)
 	public String doGetClusters(final Model model, @PathVariable("id") int id) {
 		List<TrajectoryRecord> list = this.clusterRecordService.getClusterById(id);
