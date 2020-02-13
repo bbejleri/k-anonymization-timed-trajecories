@@ -113,7 +113,6 @@ public class ClusterRecordService {
 		return null;
 	}
 
-	// ACB AB
 	public ClusterRecord findBestCluster(final List<ClusterRecord> clusters, final TrajectoryRecord trajectory) {
 		final String trajectoryInitials = this.singleRecordService.translateToVisualisedTrajectory(trajectory).getInicalTrajectory();
 		for (ClusterRecord cluster : clusters) {

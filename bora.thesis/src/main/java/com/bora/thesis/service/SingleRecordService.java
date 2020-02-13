@@ -241,19 +241,13 @@ public class SingleRecordService {
 		final List<Character> chars1 = centroid.chars().mapToObj(x -> (char) x).collect(Collectors.toList());
 		final List<Character> chars2 = initialTrajectory.chars().mapToObj(x -> (char) x).collect(Collectors.toList());
 		final HashMap<String, String> map = this.getSymbolicZones();
-		String pointstring = new String();
 		for (Character ch : chars2) {
 			if (!chars1.contains(ch)) {
-				pointstring = ch.toString();
+				String pointstring = ch.toString();
+				List<SingleRecord> points = trajectory.getPoints();
+				points.removeIf(t -> t.getZone().equalsIgnoreCase(map.get(pointstring)));
+				break;
 			}
-			break;
-		}
-		for (int i = 0; i < trajectory.getPoints().size();) {
-			// TODO: FIX REMOVE
-			if (trajectory.getPoints().get(i).getZone().equalsIgnoreCase(map.get(pointstring))) {
-				trajectory.getPoints().remove(i);
-			}
-			break;
 		}
 		return trajectory;
 	}
