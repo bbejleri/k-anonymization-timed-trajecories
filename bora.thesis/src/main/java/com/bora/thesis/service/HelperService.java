@@ -4,7 +4,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.bora.thesis.repositories.SingleRecordRepository;
 
 /**
  * @author: bora
@@ -12,8 +17,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class HelperService {
 
+	@Autowired
+	private SingleRecordService singleRecordService;
+
+	@Autowired
+	private SingleRecordRepository singleRecordRepository;
+
 	public String removeLastChars(final String s) {
 		return Optional.ofNullable(s).filter(str -> str.length() != 0).map(str -> str.substring(0, str.length() - 3)).orElse(s);
+	}
+
+	@Transactional
+	public void removeTimestampLocaltime() {
+		this.singleRecordService.getList().stream().forEach(x -> {
+			this.singleRecordRepository.updateTimestamp(this.removeLastChars(x.getTimestamp()), x.getTrackid(), this.singleRecordService.getById(x.getTrackid()));
+		});
 	}
 
 	public boolean checkDateRange(final Date min, final Date max, final Date current) {

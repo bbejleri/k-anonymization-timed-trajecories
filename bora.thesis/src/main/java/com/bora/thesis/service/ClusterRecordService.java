@@ -106,7 +106,9 @@ public class ClusterRecordService {
 			if (this.sameNumberOfPoints(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory())) {
 				if (this.calculateLCSSSimilarity(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory()) == this
 						.minDistance(furthiestRecordVisual.getInicalTrajectory())) {
-					return record;
+					if (this.singleRecordService.haveSameTemporalClassification(record, furthiestRecord)) {
+						return record;
+					}
 				}
 			}
 		}
@@ -135,6 +137,7 @@ public class ClusterRecordService {
 			alltrajectories.remove(this.findBestNeighbour(alltrajectories, furthiestRecord));
 		}
 		cluster.setCentroid(this.singleRecordService.translateToVisualisedTrajectory(clusterTrajectories.get(0)).getInicalTrajectory());
+		// + " " + this.singleRecordService.getGeneralTimestamp(clusterTrajectories.get(0))
 		cluster.setTrajectories(clusterTrajectories);
 		return cluster;
 	}
@@ -153,8 +156,12 @@ public class ClusterRecordService {
 				for (TrajectoryRecord trajectory : cluster.getTrajectories()) {
 					cluster = this.findBestCluster(clusters, trajectory);
 					if (ObjectUtils.isNotEmpty(cluster)) {
+						VisualTrajectoryRecord visualTrajectory = this.singleRecordService.translateToVisualisedTrajectory(trajectory);
+						final long initialsLength = visualTrajectory.getInicalTrajectory().chars().count();
+						// String centroid = cluster.getCentroid().substring(0, (int) initialsLength);
 						final long centroidLength = cluster.getCentroid().chars().count();
-						final long initialsLength = this.singleRecordService.translateToVisualisedTrajectory(trajectory).getInicalTrajectory().chars().count();
+						System.out.println(initialsLength);
+						System.out.println(centroidLength);
 						if (initialsLength - centroidLength > 0) {
 							cluster.getTrajectories().add(this.singleRecordService.removeObsoletePoint(cluster.getCentroid(), trajectory));
 						}
