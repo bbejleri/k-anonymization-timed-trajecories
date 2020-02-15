@@ -41,8 +41,8 @@ public class SingleRecordService {
 		boolean check = Boolean.FALSE;
 		final String startT1 = t1.getPoints().get(0).getTimestamp().substring(11, 13);
 		final String endT1 = t1.getPoints().get(t1.getPoints().size() - 1).getTimestamp().substring(11, 13);
-		final String startT2 = t1.getPoints().get(0).getTimestamp().substring(11, 13);
-		final String endT2 = t1.getPoints().get(t1.getPoints().size() - 1).getTimestamp().substring(11, 13);
+		final String startT2 = t2.getPoints().get(0).getTimestamp().substring(11, 13);
+		final String endT2 = t2.getPoints().get(t2.getPoints().size() - 1).getTimestamp().substring(11, 13);
 		final HashMap<List<String>, String> map = this.getTemporalClassification();
 		String st1 = null;
 		String st2 = null;
@@ -67,6 +67,7 @@ public class SingleRecordService {
 			final String periodT2 = st2 + et2;
 			if (periodT1.equalsIgnoreCase(periodT2)) {
 				check = Boolean.TRUE;
+			} else {
 			}
 		}
 		return check;

@@ -106,9 +106,9 @@ public class ClusterRecordService {
 		for (TrajectoryRecord record : alltrajectories) {
 			final VisualTrajectoryRecord visualTrajectoryRecord = this.singleRecordService.translateToVisualisedTrajectory(record);
 			if (this.sameNumberOfPoints(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory())) {
-				if (this.calculateLCSSSimilarity(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory()) == this
-						.minDistance(furthiestRecordVisual.getInicalTrajectory())) {
-					if (this.singleRecordService.haveSameTemporalClassification(furthiestRecord, record)) {
+				if (this.singleRecordService.haveSameTemporalClassification(furthiestRecord, record)) {
+					if (this.calculateLCSSSimilarity(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory()) == this
+							.minDistance(furthiestRecordVisual.getInicalTrajectory())) {
 						return record;
 					}
 				}
@@ -120,7 +120,8 @@ public class ClusterRecordService {
 	public ClusterRecord findBestCluster(final List<ClusterRecord> clusters, final TrajectoryRecord trajectory) {
 		final String trajectoryInitials = this.singleRecordService.translateToVisualisedTrajectory(trajectory).getInicalTrajectory();
 		for (ClusterRecord cluster : clusters) {
-			if (this.calculateLCSSSimilarity(cluster.getCentroid(), trajectoryInitials) == this.minDistance(trajectoryInitials) - 1) {
+			if (this.calculateLCSSSimilarity(StringUtils.substringBefore(cluster.getCentroid(), " "), trajectoryInitials) == this.minDistance(trajectoryInitials) - 1) {
+				// TODO: check for best cluster temporarily as well
 				return cluster;
 			}
 		}
