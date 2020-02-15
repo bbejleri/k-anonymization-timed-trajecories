@@ -9,6 +9,8 @@ public class ClusterRecord {
 
 	private String centroid;
 
+	private int density;
+
 	private long id;
 
 	private List<TrajectoryRecord> trajectories;
@@ -18,6 +20,13 @@ public class ClusterRecord {
 	 */
 	public String getCentroid() {
 		return centroid;
+	}
+
+	/**
+	 * @return the density
+	 */
+	public int getDensity() {
+		return density;
 	}
 
 	/**
@@ -40,6 +49,14 @@ public class ClusterRecord {
 	 */
 	public void setCentroid(String centroid) {
 		this.centroid = centroid;
+	}
+
+	/**
+	 * @param density
+	 *           the density to set
+	 */
+	public void setDensity(int density) {
+		this.density = density;
 	}
 
 	/**

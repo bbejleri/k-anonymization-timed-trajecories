@@ -11,11 +11,29 @@ import java.util.List;
  */
 public class ClusterWrapper {
 
+	private String centroid;
+
+	private int density;
+
 	private long id;
 
 	private List<VisualTrajectoryRecord> visualtrajectories;
 
 	private List<TrajectoryRecord> trajectoryRecords;
+
+	/**
+	 * @return the centroid
+	 */
+	public String getCentroid() {
+		return centroid;
+	}
+
+	/**
+	 * @return the density
+	 */
+	public int getDensity() {
+		return density;
+	}
 
 	/**
 	 * @return the id
@@ -36,6 +54,22 @@ public class ClusterWrapper {
 	 */
 	public List<VisualTrajectoryRecord> getVisualtrajectories() {
 		return visualtrajectories;
+	}
+
+	/**
+	 * @param centroid
+	 *           the centroid to set
+	 */
+	public void setCentroid(String centroid) {
+		this.centroid = centroid;
+	}
+
+	/**
+	 * @param density
+	 *           the density to set
+	 */
+	public void setDensity(int density) {
+		this.density = density;
 	}
 
 	/**

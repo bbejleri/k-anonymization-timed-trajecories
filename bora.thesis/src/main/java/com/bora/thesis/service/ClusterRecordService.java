@@ -75,8 +75,9 @@ public class ClusterRecordService {
 	 * @param entryPointTrajecotry
 	 * @return furthest {@link TrajectoryRecord} from a random trajectory of all trajectories
 	 */
-	public TrajectoryRecord getFurthiestRecord(final List<TrajectoryRecord> alltrajectories, final VisualTrajectoryRecord visualEntryPoint) {
+	public TrajectoryRecord getFurthiestRecord(final List<TrajectoryRecord> alltrajectories, final TrajectoryRecord entryPoint) {
 		TrajectoryRecord furthiestRecord = new TrajectoryRecord();
+		final VisualTrajectoryRecord visualEntryPoint = this.singleRecordService.translateToVisualisedTrajectory(entryPoint);
 		final List<VisualTrajectoryRecord> visualTrajectories = alltrajectories.stream().map(x -> this.singleRecordService.translateToVisualisedTrajectory(x))
 				.collect(Collectors.toList());
 		final List<String> initialTrajectories = visualTrajectories.stream().map(y -> y.getInicalTrajectory()).collect(Collectors.toList());
@@ -105,10 +106,8 @@ public class ClusterRecordService {
 			final VisualTrajectoryRecord visualTrajectoryRecord = this.singleRecordService.translateToVisualisedTrajectory(record);
 			if (this.sameNumberOfPoints(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory())) {
 				if (this.calculateLCSSSimilarity(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory()) == this
-						.minDistance(furthiestRecordVisual.getInicalTrajectory())) {
-					if (this.singleRecordService.haveSameTemporalClassification(record, furthiestRecord)) {
-						return record;
-					}
+						.minDistance(furthiestRecordVisual.getInicalTrajectory()) && this.singleRecordService.haveSameTemporalClassification(furthiestRecord, record)) {
+					return record;
 				}
 			}
 		}
@@ -127,8 +126,7 @@ public class ClusterRecordService {
 
 	public ClusterRecord createClusterWithKElements(final List<TrajectoryRecord> alltrajectories, final int k) {
 		final TrajectoryRecord randomTrajectory = this.getRandomTrajectory(alltrajectories);
-		final VisualTrajectoryRecord visualRandomTrajectory = this.singleRecordService.translateToVisualisedTrajectory(randomTrajectory);
-		final TrajectoryRecord furthiestRecord = this.getFurthiestRecord(alltrajectories, visualRandomTrajectory);
+		final TrajectoryRecord furthiestRecord = this.getFurthiestRecord(alltrajectories, randomTrajectory);
 		final List<TrajectoryRecord> clusterTrajectories = new ArrayList<TrajectoryRecord>();
 		ClusterRecord cluster = new ClusterRecord();
 		alltrajectories.remove(randomTrajectory);
@@ -136,9 +134,10 @@ public class ClusterRecordService {
 			clusterTrajectories.add(this.findBestNeighbour(alltrajectories, furthiestRecord));
 			alltrajectories.remove(this.findBestNeighbour(alltrajectories, furthiestRecord));
 		}
-		cluster.setCentroid(this.singleRecordService.translateToVisualisedTrajectory(clusterTrajectories.get(0)).getInicalTrajectory());
-		// + " " + this.singleRecordService.getGeneralTimestamp(clusterTrajectories.get(0))
+		cluster.setCentroid(this.singleRecordService.translateToVisualisedTrajectory(clusterTrajectories.get(0)).getInicalTrajectory() + " "
+				+ this.singleRecordService.getGeneralTimestamp(clusterTrajectories.get(0)));
 		cluster.setTrajectories(clusterTrajectories);
+		cluster.setDensity(clusterTrajectories.size());
 		return cluster;
 	}
 
@@ -148,7 +147,7 @@ public class ClusterRecordService {
 		int count = 1;
 		while (alltrajectories.size() >= k) {
 			ClusterRecord cluster = this.createClusterWithKElements(alltrajectories, k);
-			if (cluster.getTrajectories().size() > k) {
+			if (cluster.getTrajectories().size() >= k) {
 				cluster.setId(count);
 				clusters.add(cluster);
 				count++;
@@ -158,12 +157,9 @@ public class ClusterRecordService {
 					if (ObjectUtils.isNotEmpty(cluster)) {
 						VisualTrajectoryRecord visualTrajectory = this.singleRecordService.translateToVisualisedTrajectory(trajectory);
 						final long initialsLength = visualTrajectory.getInicalTrajectory().chars().count();
-						// String centroid = cluster.getCentroid().substring(0, (int) initialsLength);
-						final long centroidLength = cluster.getCentroid().chars().count();
-						System.out.println(initialsLength);
-						System.out.println(centroidLength);
+						final long centroidLength = cluster.getCentroid().substring(0, (int) initialsLength - 1).chars().count();
 						if (initialsLength - centroidLength > 0) {
-							cluster.getTrajectories().add(this.singleRecordService.removeObsoletePoint(cluster.getCentroid(), trajectory));
+							// cluster.getTrajectories().add(this.singleRecordService.removeObsoletePoint(cluster.getCentroid(), trajectory));
 						}
 					}
 				}
@@ -178,6 +174,8 @@ public class ClusterRecordService {
 		for (ClusterRecord c : clusters) {
 			ClusterWrapper clusterwrapper = new ClusterWrapper();
 			clusterwrapper.setId(c.getId());
+			clusterwrapper.setCentroid(c.getCentroid());
+			clusterwrapper.setDensity(c.getTrajectories().size());
 			List<VisualTrajectoryRecord> visuals = new ArrayList<VisualTrajectoryRecord>();
 			List<TrajectoryRecord> trajectories = new ArrayList<TrajectoryRecord>();
 			for (TrajectoryRecord t : c.getTrajectories()) {

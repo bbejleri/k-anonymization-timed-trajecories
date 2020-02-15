@@ -15,31 +15,23 @@
 <body>
 <div class="container">
    <div class="row">
-     <h4 style="margin: 30px;"><span class="badge badge-secondary">All Formed Clusters</span></h4>   
+     <h4><span class="badge badge-secondary">All Formed Clusters</span></h4>   
    </div>
-    <div class="row">
-        <div class="col-6">
+    <div class="row" style="width: 100%">
+        <div class="col-12">
             <table class="table">
               <tr>
                   <th scope="col">Cluster ID</th>
-                  <th scope="col">Trajectories by Initials</th>                 
+                  <th scope="col">Cluster Centroid</th>  
+                  <th scope="col">Cluster Density</th>
+                  <th scope="col">Trajectories by Locations (+ time) / Initials </th>                                             
                </tr>
                <tbody>
-                <tr th:each="entry: ${wrappers}">
-                    <td th:text="*{entry.id}"></td>                 
-                    <td style="display: flex;align-items: center;" th:each="r, iterationStatus : ${entry.visualtrajectories}" th:text="${r.inicalTrajectory}"></td>
-               </tr>           
-               </tbody>
-          </table>
-        </div> 
-        <div class="col-6">
-            <table class="table">
-              <tr>
-                  <th scope="col">Trajectories by Locations (+ time)</th>                 
-               </tr>
-               <tbody>
-                <tr th:each="entry: ${wrappers}">
-                    <td style="display: flex;align-items: center;" th:each="r, iterationStatus : ${entry.visualtrajectories}" th:text="${r.namedTrajectory}"></td>
+                <tr th:each="entry: ${wrappers}" style="width:100%">
+                    <td th:text="*{entry.id}"></td>  
+                    <td th:text="*{entry.centroid}"></td>                                     
+                    <td th:text="*{entry.density}"></td> 
+                    <td style="display: block;vertical-align: top;" th:each="r, iterationStatus : ${entry.visualtrajectories}" th:text="${r.namedTrajectory} + '   /   ' + ${r.inicalTrajectory}"></td>                                                     
                </tr>           
                </tbody>
           </table>
