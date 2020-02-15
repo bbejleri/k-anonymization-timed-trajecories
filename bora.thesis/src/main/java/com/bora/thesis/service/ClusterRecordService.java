@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -106,8 +107,10 @@ public class ClusterRecordService {
 			final VisualTrajectoryRecord visualTrajectoryRecord = this.singleRecordService.translateToVisualisedTrajectory(record);
 			if (this.sameNumberOfPoints(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory())) {
 				if (this.calculateLCSSSimilarity(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory()) == this
-						.minDistance(furthiestRecordVisual.getInicalTrajectory()) && this.singleRecordService.haveSameTemporalClassification(furthiestRecord, record)) {
-					return record;
+						.minDistance(furthiestRecordVisual.getInicalTrajectory())) {
+					if (this.singleRecordService.haveSameTemporalClassification(furthiestRecord, record)) {
+						return record;
+					}
 				}
 			}
 		}
@@ -157,9 +160,9 @@ public class ClusterRecordService {
 					if (ObjectUtils.isNotEmpty(cluster)) {
 						VisualTrajectoryRecord visualTrajectory = this.singleRecordService.translateToVisualisedTrajectory(trajectory);
 						final long initialsLength = visualTrajectory.getInicalTrajectory().chars().count();
-						final long centroidLength = cluster.getCentroid().substring(0, (int) initialsLength - 1).chars().count();
+						final long centroidLength = StringUtils.substringBefore(cluster.getCentroid(), " ").chars().count();
 						if (initialsLength - centroidLength > 0) {
-							// cluster.getTrajectories().add(this.singleRecordService.removeObsoletePoint(cluster.getCentroid(), trajectory));
+							cluster.getTrajectories().add(this.singleRecordService.removeObsoletePoint(cluster.getCentroid(), trajectory));
 						}
 					}
 				}
