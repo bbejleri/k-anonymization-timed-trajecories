@@ -67,7 +67,6 @@ public class SingleRecordService {
 			final String periodT2 = st2 + et2;
 			if (periodT1.equalsIgnoreCase(periodT2)) {
 				check = Boolean.TRUE;
-			} else {
 			}
 		}
 		return check;

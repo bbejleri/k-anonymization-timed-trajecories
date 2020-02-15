@@ -106,11 +106,9 @@ public class ClusterRecordService {
 		for (TrajectoryRecord record : alltrajectories) {
 			final VisualTrajectoryRecord visualTrajectoryRecord = this.singleRecordService.translateToVisualisedTrajectory(record);
 			if (this.sameNumberOfPoints(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory())) {
-				if (this.singleRecordService.haveSameTemporalClassification(furthiestRecord, record)) {
-					if (this.calculateLCSSSimilarity(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory()) == this
-							.minDistance(furthiestRecordVisual.getInicalTrajectory())) {
-						return record;
-					}
+				if (this.calculateLCSSSimilarity(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory()) == this
+						.minDistance(furthiestRecordVisual.getInicalTrajectory()) && this.singleRecordService.haveSameTemporalClassification(furthiestRecord, record)) {
+					return record;
 				}
 			}
 		}
