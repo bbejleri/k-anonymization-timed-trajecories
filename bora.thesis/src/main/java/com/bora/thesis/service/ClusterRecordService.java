@@ -119,8 +119,9 @@ public class ClusterRecordService {
 		final String trajectoryInitials = this.singleRecordService.translateToVisualisedTrajectory(trajectory).getInicalTrajectory();
 		for (ClusterRecord cluster : clusters) {
 			if (this.calculateLCSSSimilarity(StringUtils.substringBefore(cluster.getCentroid(), " "), trajectoryInitials) == this.minDistance(trajectoryInitials) - 1) {
-				// TODO: check for best cluster temporarily as well
-				return cluster;
+				if (this.singleRecordService.haveSameTemporalClassification(cluster.getTrajectories().get(0), trajectory)) {
+					return cluster;
+				}
 			}
 		}
 		return null;
@@ -172,7 +173,7 @@ public class ClusterRecordService {
 
 	public List<ClusterWrapper> getAllClusterTrajectories() {
 		List<ClusterWrapper> clusterwrappers = new ArrayList<ClusterWrapper>();
-		final List<ClusterRecord> clusters = this.kMember(5);
+		final List<ClusterRecord> clusters = this.kMember(10);
 		for (ClusterRecord c : clusters) {
 			ClusterWrapper clusterwrapper = new ClusterWrapper();
 			clusterwrapper.setId(c.getId());
@@ -191,11 +192,11 @@ public class ClusterRecordService {
 		return clusterwrappers;
 	}
 
-	public List<TrajectoryRecord> getClusterById(final int id) {
-		List<ClusterRecord> clusters = this.kMember(5);
+	public ClusterRecord getClusterById(final int id) {
+		List<ClusterRecord> clusters = this.kMember(10);
 		for (ClusterRecord c : clusters) {
 			if (c.getId() == id) {
-				return c.getTrajectories();
+				return c;
 			}
 		}
 		return null;

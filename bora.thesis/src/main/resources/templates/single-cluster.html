@@ -15,7 +15,13 @@
 <body>
 <div class="container">
    <div class="row">
-     <h4 style="margin: 30px;">All Trajectories of Cluster: <span class="badge badge-secondary" th:text="${id}"></span></h4>   
+     <h4 style="margin: 30px;">All Trajectories for Cluster: <span class="badge badge-secondary" th:text="${cluster.id}"></span></h4>  
+   </div>
+   <div class="row">
+       <h5 style="margin-left: 30px;" th:text="'Cluster Centroid: ' + ${cluster.centroid}"></h5>
+   </div><br>
+   <div class="row">
+       <h5 style="margin-left: 30px;" th:text="'Cluster Density: ' + ${cluster.density}"></h5>
    </div>
     <div class="row">
         <div class="col-9">

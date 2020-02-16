@@ -13,22 +13,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/104/three.js"></script>
 </head>
 <body>
-<div class="container" style="margin: 30px;"> 
-     <div class="row">
-         <h4 style="margin: 30px;"> <span class="badge badge-secondary">All Clusters </span></h4>   
-    </div>
-    <div class="row">
-        <div class="col-12">        
-            <div class="list-group" th:each="entry : ${clusters}">
-                <a th:href="@{'/cluster/' + ${entry.id}}" class="list-group-item list-group-item-action" th:text="'Cluster: ' + ${entry.id}"></a>             
-            </div> 
-            <div class="row" style="margin-top: 30px;margin-left: 30%;">
-                <a class="btn btn-warning" th:href="@{/allclusters}" role="button" style="margin-left: 15px;">Show all Cluster's Records</a>
-                <a class="btn btn-warning" th:href="@{/allclustercentroids}" role="button" style="margin-left: 15px;">Show all Cluster's Centroids</a>
-                <a class="btn btn-primary" th:href="@{/alltrajectories}" role="button" style="margin-left: 15px;">Back</a>
-            </div>           
-        </div>
-     </div>   
+<div class="container">
+   <div class="row">
+     <h4><span class="badge badge-secondary">All Cluster Centroids</span></h4>   
+   </div>
+    <div class="row" style="width: 100%">
+        <div class="col-12">
+            <table class="table">
+              <tr>
+                  <th scope="col">Cluster ID</th>
+                  <th scope="col">Cluster Centroid</th>      
+                  <th scope="col">Cluster Density</th>                                                       
+               </tr>
+               <tbody>
+                <tr th:each="entry: ${clusters}" style="width:100%">
+                    <td th:text="*{entry.id}"></td>  
+                    <td th:text="*{entry.centroid}"></td>
+                    <td th:text="*{entry.density}"></td>
+               </tr>           
+               </tbody>
+          </table>
+        </div>        
+   </div> 
 </div>
    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>

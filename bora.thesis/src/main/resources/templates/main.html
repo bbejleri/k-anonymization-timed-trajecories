@@ -40,8 +40,8 @@
         </div>
         <div class="col" style="margin-top: 5%;">
                 <a class="btn btn-danger" th:href="@{/remove/noise}">Clear Noise From Dataset</a><br><br>
-                <a class="btn btn-danger" th:href="@{/remove/singles}">Clear Singles</a><br><br>
-                <a class="btn btn-info" th:href="@{/index}">Show Distinct MACs</a><br>
+                <a class="btn btn-danger" th:href="@{/remove/singles}">Clear Singles</a><br><br>                              
+                <a class="btn btn-info" th:href="@{/macs}">Show Distinct MACs</a><br>
                 <a class="btn btn-info" th:href="@{/entered}">Show All Entered Zones</a><br>
                 <a class="btn btn-info" th:href="@{/left}">Show All Left Zones</a><br>
                 <div class="btn-group dropleft">
@@ -59,7 +59,9 @@
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" th:each="entry: ${hours}" th:name="time" th:value="${entry}" th:href="@{'/hourly/' + ${entry}}" th:text="${entry} + ':00:00'"></a>
                     </div>
-                </div>
+                </div><br><br>
+                <a class="btn btn-success" th:href="@{/alltrajectories}">Show All Formed Trajectories</a><br><br>
+                <a class="btn btn-success" th:href="@{/cluster}">Cluster Trajectories</a><br>
                 <div class="stats-div" style="margin-top: 20px;">
                 <ul class="list-group">
                     <li class="list-group-item active" th:text="'Total Entries: ' + ${totalentries}"></li>

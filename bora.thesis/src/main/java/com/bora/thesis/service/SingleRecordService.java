@@ -72,23 +72,6 @@ public class SingleRecordService {
 		return check;
 	}
 
-	public String getGeneralTimestamp(final TrajectoryRecord trajectory) {
-		final HashMap<List<String>, String> map = this.getTemporalClassification();
-		final String start = trajectory.getPoints().get(0).getTimestamp().substring(11, 13);
-		final String end = trajectory.getPoints().get(trajectory.getPoints().size() - 1).getTimestamp().substring(11, 13);
-		String s = null;
-		String e = null;
-		for (Map.Entry<List<String>, String> entry : map.entrySet()) {
-			if (entry.getKey().contains(start)) {
-				s = entry.getValue();
-			}
-			if (entry.getKey().contains(end)) {
-				e = entry.getValue();
-			}
-		}
-		return s + "-" + e;
-	}
-
 	/**
 	 * collect noises of the dataset for all trajectories
 	 * 
@@ -169,8 +152,36 @@ public class SingleRecordService {
 		return zones;
 	}
 
+	public String getGeneralTimestamp(final TrajectoryRecord trajectory) {
+		final HashMap<List<String>, String> map = this.getTemporalClassification();
+		final String start = trajectory.getPoints().get(0).getTimestamp().substring(11, 13);
+		final String end = trajectory.getPoints().get(trajectory.getPoints().size() - 1).getTimestamp().substring(11, 13);
+		String s = null;
+		String e = null;
+		for (Map.Entry<List<String>, String> entry : map.entrySet()) {
+			if (entry.getKey().contains(start)) {
+				s = entry.getValue();
+			}
+			if (entry.getKey().contains(end)) {
+				e = entry.getValue();
+			}
+		}
+		return s + "-" + e;
+	}
+
 	public List<SingleRecord> getList() {
 		return singleRecordRepository.getAll();
+	}
+
+	/**
+	 * translates a list of trajectories to visualised trajectories
+	 * 
+	 * @param trajectories
+	 * @return {@link List<VisualTrajectoryRecord>}
+	 */
+	public List<VisualTrajectoryRecord> getListVisualTrajectoryRecord(List<TrajectoryRecord> trajectories) {
+		List<VisualTrajectoryRecord> list = trajectories.stream().map(t -> this.translateToVisualisedTrajectory(t)).collect(Collectors.toList());
+		return list;
 	}
 
 	public List<TrajectoryRecord> generateAllTrajectories() {
@@ -230,7 +241,7 @@ public class SingleRecordService {
 		return temporalClassification;
 	}
 
-	public boolean isMultipleLocationTrajectory(String initializedTrajectory) {
+	public boolean isMultipleLocationTrajectory(final String initializedTrajectory) {
 		List<String> multipleLocationTrajectories = new ArrayList<String>();
 		boolean isMultipleLocation = Boolean.FALSE;
 		List<Character> chars = initializedTrajectory.chars().mapToObj(y -> (char) y).collect(Collectors.toList());
@@ -323,7 +334,7 @@ public class SingleRecordService {
 		VisualTrajectoryRecord visualTrajectoryRecord = new VisualTrajectoryRecord();
 		for (SingleRecord point : trajectory.getPoints()) {
 			visualised = sb.append(" -> ").append(point.getZone()).toString();
-			named = sb1.append(" -> ").append(zoneNames.get(point.getZone())).append(" (").append(point.getTimestamp()).append(") ").toString();
+			named = sb1.append(" -> ").append(zoneNames.get(point.getZone())).append(" (").append(point.getTimestamp().substring(11, 23)).append(") ").toString();
 			initialized = sb2.append(zoneInicials.get(point.getZone())).toString();
 		}
 		visualTrajectoryRecord.setVizualizedTrajectory(visualised);

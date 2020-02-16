@@ -1,6 +1,5 @@
 package com.bora.thesis.core;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.bora.thesis.dataaccess.ClusterRecord;
 import com.bora.thesis.dataaccess.ClusterWrapper;
 import com.bora.thesis.dataaccess.TrajectoryRecord;
-import com.bora.thesis.dataaccess.VisualTrajectoryRecord;
 import com.bora.thesis.service.ClusterRecordService;
 import com.bora.thesis.service.SingleRecordService;
 
@@ -31,7 +29,7 @@ public class ClusterRecordContoller {
 
 	@RequestMapping(value = "/cluster", method = RequestMethod.GET)
 	public String doGetCluster(final Model model) {
-		List<ClusterRecord> clusters = this.clusterRecordService.kMember(5);
+		List<ClusterRecord> clusters = this.clusterRecordService.kMember(10);
 		model.addAttribute("clusters", clusters);
 		return "cluster-record-view";
 	}
@@ -45,13 +43,17 @@ public class ClusterRecordContoller {
 
 	@RequestMapping(value = "/cluster/{id}", method = RequestMethod.GET)
 	public String doGetClusters(final Model model, @PathVariable("id") int id) {
-		List<TrajectoryRecord> list = this.clusterRecordService.getClusterById(id);
-		List<VisualTrajectoryRecord> visuals = new ArrayList<VisualTrajectoryRecord>();
-		for (TrajectoryRecord record : list) {
-			visuals.add(this.singleRecordService.translateToVisualisedTrajectory(record));
-		}
-		model.addAttribute("visuals", visuals);
-		model.addAttribute("id", id);
+		ClusterRecord cluster = this.clusterRecordService.getClusterById(id);
+		List<TrajectoryRecord> list = cluster.getTrajectories();
+		model.addAttribute("cluster", cluster);
+		model.addAttribute("visuals", this.singleRecordService.getListVisualTrajectoryRecord(list));
 		return "single-cluster";
+	}
+
+	@RequestMapping(value = "/allclustercentroids", method = RequestMethod.GET)
+	public String doGetAllClusterCentroids(final Model model) {
+		List<ClusterRecord> clusters = this.clusterRecordService.kMember(10);
+		model.addAttribute("clusters", clusters);
+		return "all-cluster-centroids";
 	}
 }

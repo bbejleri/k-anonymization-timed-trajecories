@@ -19,8 +19,8 @@
   </div>
     <div class="row">
         <div class="col">
-            <div class="list-group" th:each="entry : ${distinctMacAddresses}">
-                <a th:href="@{'/routes/' + ${entry}}" class="list-group-item list-group-item-action" th:text="${entry}"></a>             
+            <div class="list-group" th:each="entry, iterationStatus : ${distinctMacAddresses}">
+                <a th:href="@{'/routes/' + ${entry}}" class="list-group-item list-group-item-action" th:text="${iterationStatus.index} + ' - ' + ${entry}"></a>             
             </div>     
         </div>
         <div class="col">

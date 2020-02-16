@@ -14,11 +14,6 @@ import com.bora.thesis.dataaccess.VisualTrajectoryRecord;
 @Service
 public class VisualTrajectoryRecordService {
 
-	public List<String> getDistinctInitialTrajectories(final List<VisualTrajectoryRecord> visuals) {
-		List<String> list = visuals.stream().map(x -> x.getInicalTrajectory()).distinct().collect(Collectors.toList());
-		return list;
-	}
-
 	public HashMap<String, Integer> countDistinctInitialTrajectories(final List<VisualTrajectoryRecord> visuals) {
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		for (VisualTrajectoryRecord record : visuals) {
@@ -29,5 +24,10 @@ public class VisualTrajectoryRecordService {
 			}
 		}
 		return map;
+	}
+
+	public List<String> getDistinctInitialTrajectories(final List<VisualTrajectoryRecord> visuals) {
+		List<String> list = visuals.stream().map(x -> x.getInicalTrajectory()).distinct().collect(Collectors.toList());
+		return list;
 	}
 }

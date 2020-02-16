@@ -31,7 +31,7 @@ public class SingleRecordController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String doGet(final Model model) {
 		final List<SingleRecord> records = this.singleRecordService.getList();
-		final List<String> hours = Arrays.asList("17", "18", "19", "20", "21", "22");
+		final List<String> hours = Arrays.asList("17", "18", "19", "20", "21", "22", "23", "00", "01", "02", "03", "04", "05", "06");
 		final List<String> zones = records.stream().map(x -> x.getZone()).distinct().collect(Collectors.toList());
 		model.addAttribute("totalentered", records.stream().filter(x -> x.getEventtype() == 0).count());
 		model.addAttribute("totalleft", records.stream().filter(x -> x.getEventtype() == 1).count());
@@ -43,6 +43,15 @@ public class SingleRecordController {
 		model.addAttribute("zones", zones);
 		model.addAttribute("list", records);
 		return "main";
+	}
+
+	@RequestMapping(value = "/macs", method = RequestMethod.GET)
+	public String doGetAllMacs(final Model model) {
+		int numberOfEntities = this.singleRecordService.getDistinctMacAdresses().size();
+		List<String> distinctMacAddresses = this.singleRecordService.getDistinctMacAdresses();
+		model.addAttribute("totalentries", numberOfEntities);
+		model.addAttribute("distinctMacAddresses", distinctMacAddresses);
+		return "all-macs";
 	}
 
 	@RequestMapping(value = "/zone/{zone}", method = RequestMethod.GET)

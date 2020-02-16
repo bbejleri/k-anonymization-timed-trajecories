@@ -22,8 +22,10 @@
             <div class="list-group" th:each="entry : ${clusters}">
                 <a th:href="@{'/cluster/' + ${entry.id}}" class="list-group-item list-group-item-action" th:text="'Cluster: ' + ${entry.id}"></a>             
             </div> 
-            <div class="row" style="margin-top: 30px;margin-left: 40%;">
+            <div class="row" style="margin-top: 30px;margin-left: 30%;">
                 <a class="btn btn-warning" th:href="@{/allclusters}" role="button" style="margin-left: 15px;">Show all Cluster's Records</a>
+                <a class="btn btn-warning" th:href="@{/allclustercentroids}" role="button" style="margin-left: 15px;">Show all Cluster's Centroids</a>
+                <a class="btn btn-primary" th:href="@{/alltrajectories}" role="button" style="margin-left: 15px;">Back</a>
             </div>           
         </div>
      </div>   
