@@ -11,11 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.bora.thesis.dataaccess.ClusterRecord;
 import com.bora.thesis.dataaccess.ClusterWrapper;
-import com.bora.thesis.dataaccess.SingleRecord;
-import com.bora.thesis.dataaccess.SingleRecordAnonymized;
 import com.bora.thesis.dataaccess.TrajectoryRecord;
 import com.bora.thesis.service.ClusterRecordService;
-import com.bora.thesis.service.SingleRecordAnonymizedService;
 import com.bora.thesis.service.SingleRecordService;
 
 /**
@@ -29,9 +26,6 @@ public class ClusterRecordContoller {
 
 	@Autowired
 	private SingleRecordService singleRecordService;
-
-	@Autowired
-	private SingleRecordAnonymizedService singleRecordAnonymizedService;
 
 	@RequestMapping(value = "/cluster", method = RequestMethod.GET)
 	public String doGetCluster(final Model model) {
@@ -61,17 +55,5 @@ public class ClusterRecordContoller {
 		List<ClusterRecord> clusters = this.clusterRecordService.kMember(5);
 		model.addAttribute("clusters", clusters);
 		return "all-cluster-centroids";
-	}
-
-	// TODO: return the right view
-	@RequestMapping(value = "/anonymize/data", method = RequestMethod.GET)
-	public String anonymizeClusters(final Model model) {
-		List<ClusterRecord> clusters = this.clusterRecordService.kMember(5);
-		List<SingleRecord> points = this.clusterRecordService.getAllClustersPoints(clusters);
-		points.stream().forEach(point -> {
-			SingleRecordAnonymized singleRecordAnonymized = this.singleRecordAnonymizedService.fillValuesSingleRecordAnonymized(point);
-			this.singleRecordAnonymizedService.save(singleRecordAnonymized);
-		});
-		return "main";
 	}
 }

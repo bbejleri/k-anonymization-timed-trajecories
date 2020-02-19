@@ -15,61 +15,51 @@
 <body>
 <div class="container">
  <div class="row">
-     <h4 style="margin: 30px;"> <span class="badge badge-secondary">All Records </span></h4>   
+     <h4 style="margin: 30px;"> <span class="badge badge-secondary">Dashboard</span></h4>   
  </div>
     <div class="row">
-        <div class="col">
-          <table class="table" style="width: 50%; margin: 10px;">
-              <tr>
-                  <th scope="col">Track ID</th>
-                  <th scope="col">Zone</th>
-                  <th scope="col">Hashmac</th>
-                  <th scope="col">Timestamp</th>
-                  <th scope="col">MAC</th>
-               </tr>
-               <tbody>
-                <tr th:each="entry: ${list}">
-                    <td th:text="*{entry.trackid}"></td>
-                    <td th:text="*{entry.zone}"></td>
-                    <td th:text="*{entry.hashMac}"></td>
-                    <td th:text="*{entry.timestamp}"></td>
-                    <td th:text="*{entry.truncmac}"></td>
-               </tr>           
-               </tbody>
-          </table>     
-        </div>
-        <div class="col" style="margin-top: 5%;">
-                <a class="btn btn-danger" th:href="@{/remove/noise}">Clear Noise From Dataset</a><br><br>
-                <a class="btn btn-danger" th:href="@{/remove/singles}">Clear Singles</a><br><br>                              
-                <a class="btn btn-info" th:href="@{/macs}">Show Distinct MACs</a><br>
-                <a class="btn btn-info" th:href="@{/entered}">Show All Entered Zones</a><br>
-                <a class="btn btn-info" th:href="@{/left}">Show All Left Zones</a><br>
-                <div class="btn-group dropleft">
-                    <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <div class="col-8">
+                <form th:action="@{/anonymize/data}" method="get">	
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Anonymization Level k" name="k" id="k" aria-label="Anonymization Level k" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-success" type="submit">Anonymize Dataset</button>
+                        </div>
+                    </div>
+			    </form>
+            <a class="btn btn-lg mb-3 btn-success btn-block" th:href="@{/alltrajectories}">Show All Formed Trajectories</a>
+            <a class="btn btn-lg mb-3 btn-success btn-block" th:href="@{/cluster}">Cluster Trajectories</a>
+            <a class="btn btn-lg mb-3 btn-info btn-block" th:href="@{/macs}">Show Distinct MACs</a>
+            <a class="btn btn-lg mb-3 btn-info btn-block" th:href="@{/entered}">Show All Entered Zones</a>
+            <a class="btn btn-lg mb-3 btn-info btn-block" th:href="@{/left}">Show All Left Zones</a>
+                <div class="btn-group btn-block dropleft">
+                    <button class="btn btn-lg mb-3 btn-info btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Filter by Zone
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" th:each="entry: ${zones}" th:name="zone" th:value="${entry}" th:href="@{'/zone/' + ${entry}}" th:text="${entry}"></a>
                     </div>
                 </div><br>
-                <div class="btn-group dropleft">
-                    <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div class="btn-group btn-block dropleft">
+                    <button class="btn btn-lg mb-3 btn-info btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Filter Hourly
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" th:each="entry: ${hours}" th:name="time" th:value="${entry}" th:href="@{'/hourly/' + ${entry}}" th:text="${entry} + ':00:00'"></a>
                     </div>
-                </div><br><br>
-                <a class="btn btn-success" th:href="@{/alltrajectories}">Show All Formed Trajectories</a><br><br>
-                <a class="btn btn-success" th:href="@{/cluster}">Cluster Trajectories</a><br>
-                <div class="stats-div" style="margin-top: 20px;">
-                <ul class="list-group">
-                    <li class="list-group-item active" th:text="'Total Entries: ' + ${totalentries}"></li>
-                    <li class="list-group-item active" th:text="'Nr. of distinct entries: ' + ${distinctmacs}"></li>
-                    <li class="list-group-item active" th:text="' Nr. of distinct zones: ' + ${distinctzones}"></li>
-                    <li class="list-group-item active" th:text="'Nr. of distinct vendors: ' + ${distinctvendors} "></li>
-                 </ul>             
-            </div>
+                </div>
+                <a class="btn btn-lg mb-3 btn-danger btn-block" th:href="@{/remove/noise}">Clear Noise From Dataset</a>
+                <a class="btn btn-lg mb-3 btn-danger btn-block" th:href="@{/remove/singles}">Clear Singles</a>
+        </div>
+        <div class="col">              
+                <div class="stats-div">
+                    <ul class="list-group">
+                        <li class="list-group-item active" th:text="'Total Entries: ' + ${totalentries}"></li>
+                        <li class="list-group-item active" th:text="'Nr. of distinct entries: ' + ${distinctmacs}"></li>
+                        <li class="list-group-item active" th:text="' Nr. of distinct zones: ' + ${distinctzones}"></li>
+                        <li class="list-group-item active" th:text="'Nr. of distinct vendors: ' + ${distinctvendors} "></li>
+                    </ul>             
+                </div>
         </div>
      </div>   
 </div>
