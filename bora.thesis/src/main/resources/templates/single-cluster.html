@@ -29,13 +29,15 @@
               <tr>
                   <th scope="col">Symbolic trajectories</th>
                   <th scope="col">Named trajectories (time)</th>
-                  <th scope="col">Trajectories by Initials</th>                 
+                  <th scope="col">Trajectories by Initials</th>
+                  <th scope="col">Vendor</th>                 
                </tr>
                <tbody>
                 <tr th:each="entry: ${visuals}">
                     <td th:text="*{entry.vizualizedTrajectory}"></td>
                     <td th:text="*{entry.namedTrajectory}"></td>
                     <td th:text="*{entry.inicalTrajectory}"></td>
+                    <td th:text="*{entry.vendor}"></td>
                </tr>           
                </tbody>
           </table>    

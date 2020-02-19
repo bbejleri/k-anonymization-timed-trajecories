@@ -11,6 +11,8 @@ public class VisualTrajectoryRecord {
 
 	private String namedTrajectory;
 
+	private String vendor;
+
 	/**
 	 * @return the inicalTrajectory
 	 */
@@ -23,6 +25,13 @@ public class VisualTrajectoryRecord {
 	 */
 	public String getNamedTrajectory() {
 		return namedTrajectory;
+	}
+
+	/**
+	 * @return the vendor
+	 */
+	public String getVendor() {
+		return vendor;
 	}
 
 	/**
@@ -46,6 +55,14 @@ public class VisualTrajectoryRecord {
 	 */
 	public void setNamedTrajectory(String namedTrajectory) {
 		this.namedTrajectory = namedTrajectory;
+	}
+
+	/**
+	 * @param vendor
+	 *           the vendor to set
+	 */
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
 	}
 
 	/**

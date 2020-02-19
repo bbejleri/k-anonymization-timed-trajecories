@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.bora.thesis.dataaccess.ClusterRecord;
 import com.bora.thesis.dataaccess.ClusterWrapper;
+import com.bora.thesis.dataaccess.SingleRecord;
 import com.bora.thesis.dataaccess.TrajectoryRecord;
 import com.bora.thesis.dataaccess.VisualTrajectoryRecord;
 
@@ -127,7 +128,7 @@ public class ClusterRecordService {
 		return null;
 	}
 
-	public ClusterRecord createClusterWithKElements(final List<TrajectoryRecord> alltrajectories, final int k) {
+	public ClusterRecord createClusterWithElements(final List<TrajectoryRecord> alltrajectories) {
 		final TrajectoryRecord randomTrajectory = this.getRandomTrajectory(alltrajectories);
 		final TrajectoryRecord furthiestRecord = this.getFurthiestRecord(alltrajectories, randomTrajectory);
 		final List<TrajectoryRecord> clusterTrajectories = new ArrayList<TrajectoryRecord>();
@@ -149,7 +150,7 @@ public class ClusterRecordService {
 		final List<ClusterRecord> clusters = new ArrayList<ClusterRecord>();
 		int count = 1;
 		while (alltrajectories.size() >= k) {
-			ClusterRecord cluster = this.createClusterWithKElements(alltrajectories, k);
+			ClusterRecord cluster = this.createClusterWithElements(alltrajectories);
 			if (cluster.getTrajectories().size() >= k) {
 				cluster.setId(count);
 				clusters.add(cluster);
@@ -173,7 +174,7 @@ public class ClusterRecordService {
 
 	public List<ClusterWrapper> getAllClusterTrajectories() {
 		List<ClusterWrapper> clusterwrappers = new ArrayList<ClusterWrapper>();
-		final List<ClusterRecord> clusters = this.kMember(10);
+		final List<ClusterRecord> clusters = this.kMember(5);
 		for (ClusterRecord c : clusters) {
 			ClusterWrapper clusterwrapper = new ClusterWrapper();
 			clusterwrapper.setId(c.getId());
@@ -193,12 +194,28 @@ public class ClusterRecordService {
 	}
 
 	public ClusterRecord getClusterById(final int id) {
-		List<ClusterRecord> clusters = this.kMember(10);
+		List<ClusterRecord> clusters = this.kMember(5);
 		for (ClusterRecord c : clusters) {
 			if (c.getId() == id) {
 				return c;
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * @param clusters
+	 * @return {@link List<SingleRecord>}
+	 */
+	public List<SingleRecord> getAllClustersPoints(List<ClusterRecord> clusters) {
+		List<SingleRecord> list = new ArrayList<SingleRecord>();
+		for (ClusterRecord c : clusters) {
+			for (TrajectoryRecord t : c.getTrajectories()) {
+				for (SingleRecord s : t.getPoints()) {
+					list.add(s);
+				}
+			}
+		}
+		return list;
 	}
 }

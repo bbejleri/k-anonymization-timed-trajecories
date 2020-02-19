@@ -109,6 +109,7 @@ public class SingleRecordService {
 		TrajectoryRecord trajectory = new TrajectoryRecord();
 		List<SingleRecord> selected = route.stream().filter(this.distinctByKey(pr -> Arrays.asList(pr.getZone()))).collect(Collectors.toList());
 		trajectory.setPoints(selected);
+		trajectory.setVendor(route.get(0).getTruncmac());
 		return trajectory;
 	}
 
@@ -340,6 +341,7 @@ public class SingleRecordService {
 		visualTrajectoryRecord.setVizualizedTrajectory(visualised);
 		visualTrajectoryRecord.setNamedTrajectory(named);
 		visualTrajectoryRecord.setInicalTrajectory(initialized);
+		visualTrajectoryRecord.setVendor(trajectory.getVendor());
 		return visualTrajectoryRecord;
 	}
 }

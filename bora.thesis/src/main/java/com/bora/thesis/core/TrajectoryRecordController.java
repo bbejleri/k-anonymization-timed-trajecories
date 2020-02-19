@@ -24,7 +24,7 @@ public class TrajectoryRecordController {
 	private SingleRecordService singleRecordService;
 
 	@RequestMapping(value = "/routes/{hashmac}", method = RequestMethod.GET)
-	public String doGetRouts(final Model model, @PathVariable("hashmac") String hashmac) {
+	public String doGetRoutes(final Model model, @PathVariable("hashmac") String hashmac) {
 		List<SingleRecord> routes = this.singleRecordService.getByMacAddress(hashmac);
 		final TrajectoryRecord record = this.singleRecordService.formTrajectoryByPointLocations(routes);
 		final VisualTrajectoryRecord visualTrajectoryRecord = this.singleRecordService.translateToVisualisedTrajectory(record);

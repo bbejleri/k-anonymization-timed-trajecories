@@ -5,31 +5,21 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.bora.thesis.configs.EntityModel;
 
 /**
  * @author: bora
  */
-@Entity(name = "flowtrack_raw_50000")
-@NamedQueries({ @NamedQuery(name = "SingleRecord.getAll", query = "SELECT a FROM flowtrack_raw_50000 a"),
-		@NamedQuery(name = "SingleRecord.getByMac", query = "SELECT s FROM flowtrack_raw_50000 s WHERE s.hashMac = :hashmac"),
-		@NamedQuery(name = "SingleRecord.getById", query = "SELECT i FROM flowtrack_raw_50000 i WHERE i.trackid = :trackid"),
-		@NamedQuery(name = "SingleRecord.getByZone", query = "SELECT z FROM flowtrack_raw_50000 z WHERE z.zone = :zone"),
-		@NamedQuery(name = "SingleRecord.getBySingleZone", query = "SELECT s FROM flowtrack_raw_50000 s WHERE s.zone = :zone"),
-		@NamedQuery(name = "SingleRecord.getByZoneAndTimestamp", query = "SELECT r FROM flowtrack_raw_50000 r WHERE r.zone = :zone AND r.insert_timestamp = :timestamp"),
-		@NamedQuery(name = "SingleRecord.getDateRange", query = "SELECT e FROM flowtrack_raw_50000 e WHERE e.insert_timestamp BETWEEN :startDate AND :endDate") })
-@Table(name = "flowtrack_raw_50000")
+@Entity(name = "flowtrack_anon")
+@Table(name = "flowtrack_anon")
 @DynamicUpdate
-public class SingleRecord implements EntityModel {
+public class SingleRecordAnonymized implements EntityModel {
 
-	private static final long serialVersionUID = 282835223717958790L;
+	private static final long serialVersionUID = -9102390057621684045L;
 
 	@Id
 	@Column(name = "trackid")
@@ -64,11 +54,17 @@ public class SingleRecord implements EntityModel {
 	private String rssi;
 
 	@Column(name = "insert_timestamp")
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private String insert_timestamp;
 
 	@Column(name = "truncmac")
 	private String truncmac;
+
+	/**
+	 * @return the trackid
+	 */
+	public long getTrackid() {
+		return trackid;
+	}
 
 	/**
 	 * @return the eventtype
@@ -134,9 +130,9 @@ public class SingleRecord implements EntityModel {
 	}
 
 	/**
-	 * @return the timestamp
+	 * @return the insert_timestamp
 	 */
-	public String getTimestamp() {
+	public String getInsert_timestamp() {
 		return insert_timestamp;
 	}
 
@@ -145,6 +141,14 @@ public class SingleRecord implements EntityModel {
 	 */
 	public String getTruncmac() {
 		return truncmac;
+	}
+
+	/**
+	 * @param trackid
+	 *           the trackid to set
+	 */
+	public void setTrackid(long trackid) {
+		this.trackid = trackid;
 	}
 
 	/**
@@ -220,11 +224,11 @@ public class SingleRecord implements EntityModel {
 	}
 
 	/**
-	 * @param timestamp
-	 *           the timestamp to set
+	 * @param insert_timestamp
+	 *           the insert_timestamp to set
 	 */
-	public void setTimestamp(String timestamp) {
-		this.insert_timestamp = timestamp;
+	public void setInsert_timestamp(String insert_timestamp) {
+		this.insert_timestamp = insert_timestamp;
 	}
 
 	/**
@@ -233,20 +237,5 @@ public class SingleRecord implements EntityModel {
 	 */
 	public void setTruncmac(String truncmac) {
 		this.truncmac = truncmac;
-	}
-
-	/**
-	 * @return the trackid
-	 */
-	public long getTrackid() {
-		return trackid;
-	}
-
-	/**
-	 * @param trackid
-	 *           the trackid to set
-	 */
-	public void setTrackid(long trackid) {
-		this.trackid = trackid;
 	}
 }
