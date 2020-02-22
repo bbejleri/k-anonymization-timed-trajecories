@@ -133,10 +133,6 @@ public class SingleRecordService {
 		return this.singleRecordRepository.getByZone(zone);
 	}
 
-	public SingleRecord getByZoneAndTimestamp(final String zone, final String timestamp) {
-		return this.singleRecordRepository.getByZoneAndTimestamp(zone, timestamp);
-	}
-
 	public List<String> getDistinctMacAdresses() {
 		List<String> maclist = new ArrayList<String>();
 		for (SingleRecord record : this.getList()) {

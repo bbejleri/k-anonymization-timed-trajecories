@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.bora.thesis.dataaccess.SingleRecord;
 import com.bora.thesis.dataaccess.SingleRecordAnonymized;
@@ -24,6 +25,25 @@ public class SingleRecordAnonymizedService {
 
 	@Autowired
 	private SingleRecordService singleRecordService;
+
+	/**
+	 * get {@link List<SingleRecordAnonymized>}
+	 * 
+	 * @return {@link List<SingleRecordAnonymized>}
+	 */
+	public List<SingleRecordAnonymized> getList() {
+		return this.singleRecordAnonymizedRepository.getAll();
+	}
+
+	/**
+	 * get {@link SingleRecordAnonymized} by mac
+	 * 
+	 * @param hashMac
+	 * @return {@link SingleRecordAnonymized}
+	 */
+	public List<SingleRecordAnonymized> getByMacAddress(String hashMac) {
+		return this.singleRecordAnonymizedRepository.getByMacAddress(hashMac);
+	}
 
 	/**
 	 * transforms {@link SingleRecord} to {@link AnonymizedSingleRecord}
@@ -56,6 +76,11 @@ public class SingleRecordAnonymizedService {
 		}
 		databaseSingleRecordAnonymized.setInsert_timestamp(anonymizedTimestamp);
 		return databaseSingleRecordAnonymized;
+	}
+
+	public boolean isAnonymized() {
+		final boolean isAnonymized = CollectionUtils.isEmpty(this.getList()) ? Boolean.FALSE : Boolean.TRUE;
+		return isAnonymized;
 	}
 
 	/**

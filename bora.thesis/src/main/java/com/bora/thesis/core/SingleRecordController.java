@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.bora.thesis.dataaccess.SingleRecord;
 import com.bora.thesis.repositories.SingleRecordRepository;
+import com.bora.thesis.service.SingleRecordAnonymizedService;
 import com.bora.thesis.service.SingleRecordService;
 
 /**
@@ -27,6 +28,9 @@ public class SingleRecordController {
 
 	@Autowired
 	private SingleRecordRepository singleRecordRepository;
+
+	@Autowired
+	private SingleRecordAnonymizedService singleRecordAnonymizedService;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String doGet(final Model model) {
@@ -42,6 +46,7 @@ public class SingleRecordController {
 		model.addAttribute("hours", hours);
 		model.addAttribute("zones", zones);
 		model.addAttribute("list", records);
+		model.addAttribute("isAnonymized", this.singleRecordAnonymizedService.isAnonymized());
 		return "main";
 	}
 

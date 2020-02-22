@@ -21,17 +21,17 @@
         <div class="col-8">
                 <form th:action="@{/anonymize/data}" method="get">	
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Anonymization Level k" name="k" id="k" aria-label="Anonymization Level k" aria-describedby="basic-addon2">
+                        <input type="text" class="form-control" placeholder="Anonymization Level K" name="k" id="k" aria-label="Anonymization Level k" aria-describedby="basic-addon2">
                         <div class="input-group-append">
-                            <button class="btn btn-success" type="submit">Anonymize Dataset</button>
+                            <button class="btn btn-success" type="submit" th:disabled="${isAnonymized}">Anonymize Dataset</button>
                         </div>
                     </div>
 			    </form>
-            <a class="btn btn-lg mb-3 btn-success btn-block" th:href="@{/alltrajectories}">Show All Formed Trajectories</a>
+            <a class="btn btn-lg mb-3 btn-success btn-block" th:href="@{/alltrajectories}">All Formed Trajectories</a>
             <a class="btn btn-lg mb-3 btn-success btn-block" th:href="@{/cluster}">Cluster Trajectories</a>
-            <a class="btn btn-lg mb-3 btn-info btn-block" th:href="@{/macs}">Show Distinct MACs</a>
-            <a class="btn btn-lg mb-3 btn-info btn-block" th:href="@{/entered}">Show All Entered Zones</a>
-            <a class="btn btn-lg mb-3 btn-info btn-block" th:href="@{/left}">Show All Left Zones</a>
+            <a class="btn btn-lg mb-3 btn-info btn-block" th:href="@{/macs}">All Distinct MACs</a>
+            <a class="btn btn-lg mb-3 btn-info btn-block" th:href="@{/entered}">All Entered Zones</a>
+            <a class="btn btn-lg mb-3 btn-info btn-block" th:href="@{/left}">All Exited Zones</a>
                 <div class="btn-group btn-block dropleft">
                     <button class="btn btn-lg mb-3 btn-info btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Filter by Zone

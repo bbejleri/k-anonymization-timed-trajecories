@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
@@ -15,6 +17,8 @@ import com.bora.thesis.configs.EntityModel;
  * @author: bora
  */
 @Entity(name = "flowtrack_anon")
+@NamedQueries({ @NamedQuery(name = "SingleRecordAnonymized.getAll", query = "SELECT a FROM flowtrack_anon a"),
+		@NamedQuery(name = "SingleRecordAnonymized.getByMac", query = "SELECT s FROM flowtrack_anon s WHERE s.hashMac = :hashmac") })
 @Table(name = "flowtrack_anon")
 @DynamicUpdate
 public class SingleRecordAnonymized implements EntityModel {

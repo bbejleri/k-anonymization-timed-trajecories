@@ -43,14 +43,6 @@ public class SingleRecordRepository extends BasicRepository implements SpringCon
 		return ObjectUtils.isEmpty(record) ? null : record;
 	}
 
-	public SingleRecord getByZoneAndTimestamp(final String zone, final String timestamp) {
-		TypedQuery<SingleRecord> query = entityManager.createNamedQuery("SingleRecord.getByZoneAndTimestamp", SingleRecord.class);
-		query.setParameter("zone", zone);
-		query.setParameter("timestamp", timestamp);
-		SingleRecord record = query.getSingleResult();
-		return ObjectUtils.isEmpty(record) ? null : record;
-	}
-
 	public List<SingleRecord> getByZone(final String zone) {
 		TypedQuery<SingleRecord> query = entityManager.createNamedQuery("SingleRecord.getByZone", SingleRecord.class);
 		query.setParameter("zone", zone);
