@@ -11,7 +11,16 @@ public class VisualTrajectoryRecord {
 
 	private String namedTrajectory;
 
+	private String anonymizedTrajectory;
+
 	private String vendor;
+
+	/**
+	 * @return the anonymizedTrajectory
+	 */
+	public String getAnonymizedTrajectory() {
+		return anonymizedTrajectory;
+	}
 
 	/**
 	 * @return the inicalTrajectory
@@ -39,6 +48,14 @@ public class VisualTrajectoryRecord {
 	 */
 	public String getVizualizedTrajectory() {
 		return vizualizedTrajectory;
+	}
+
+	/**
+	 * @param anonymizedTrajectory
+	 *           the anonymizedTrajectory to set
+	 */
+	public void setAnonymizedTrajectory(String anonymizedTrajectory) {
+		this.anonymizedTrajectory = anonymizedTrajectory;
 	}
 
 	/**

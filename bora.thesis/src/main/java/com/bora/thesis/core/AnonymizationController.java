@@ -19,9 +19,10 @@ public class AnonymizationController {
 	private AnonymizationService anonymizationService;
 
 	@RequestMapping(value = "/anonymize/data", method = RequestMethod.GET)
-	public String anonymizeDataset(final Model model, @RequestParam(name = "k", required = false) final int k) {
+	public String anonymizeDataset(final Model model, @RequestParam(name = "k", required = false) int k) {
 		try {
 			this.anonymizationService.anonymizeDataset(k);
+			model.addAttribute("k", k);
 			return "anonymization-success";
 		} catch (Exception e) {
 			model.addAttribute("error", e.toString());

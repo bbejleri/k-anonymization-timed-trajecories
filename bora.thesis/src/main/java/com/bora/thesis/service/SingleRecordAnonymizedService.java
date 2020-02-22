@@ -53,7 +53,8 @@ public class SingleRecordAnonymizedService {
 	 */
 	public SingleRecordAnonymized fillValuesSingleRecordAnonymized(final SingleRecord singleRecord) {
 		SingleRecordAnonymized databaseSingleRecordAnonymized = new SingleRecordAnonymized();
-		final HashMap<List<String>, String> map = this.singleRecordService.getTemporalClassification();
+		final HashMap<List<String>, String> timestampmap = this.singleRecordService.getTemporalClassification();
+		final HashMap<List<String>, String> zonemap = this.singleRecordService.getGeneralizedZoneNames();
 		databaseSingleRecordAnonymized.setBatteryLevel(singleRecord.getBatteryLevel());
 		databaseSingleRecordAnonymized.setEventtype(singleRecord.getEventtype());
 		databaseSingleRecordAnonymized.setHashMac(singleRecord.getHashMac());
@@ -64,11 +65,17 @@ public class SingleRecordAnonymizedService {
 		// TODO: Something about the vendor - cron?
 		databaseSingleRecordAnonymized.setTruncmac(singleRecord.getTruncmac());
 		databaseSingleRecordAnonymized.setEpocutc(singleRecord.getEpocutc());
-		// TODO: Zone Name Generalized?
-		databaseSingleRecordAnonymized.setZone(singleRecord.getZone());
+		String anonymizedZone = null;
+		for (Map.Entry<List<String>, String> entry : zonemap.entrySet()) {
+			if (entry.getKey().contains(singleRecord.getZone())) {
+				anonymizedZone = entry.getValue();
+				break;
+			}
+		}
+		databaseSingleRecordAnonymized.setZone(anonymizedZone);
 		final String timestamp = singleRecord.getTimestamp().substring(11, 13);
 		String anonymizedTimestamp = null;
-		for (Map.Entry<List<String>, String> entry : map.entrySet()) {
+		for (Map.Entry<List<String>, String> entry : timestampmap.entrySet()) {
 			if (entry.getKey().contains(timestamp)) {
 				anonymizedTimestamp = entry.getValue();
 				break;

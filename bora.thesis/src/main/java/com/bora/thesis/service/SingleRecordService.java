@@ -230,6 +230,19 @@ public class SingleRecordService {
 		return zoneNames;
 	}
 
+	/**
+	 * map generalization of locations using aggregation
+	 * 
+	 * @return {@link HashMap<List<String>, String>}
+	 */
+	public HashMap<List<String>, String> getGeneralizedZoneNames() {
+		final HashMap<List<String>, String> generalizedZoneNames = new HashMap<List<String>, String>();
+		generalizedZoneNames.put(Arrays.asList("bz1078", "bz1082"), "Market Place");
+		generalizedZoneNames.put(Arrays.asList("bz1083", "bz1084"), "Public Facility");
+		generalizedZoneNames.put(Arrays.asList("bz1060", "bz1069"), "City Attraction");
+		return generalizedZoneNames;
+	}
+
 	public HashMap<List<String>, String> getTemporalClassification() {
 		final HashMap<List<String>, String> temporalClassification = new HashMap<List<String>, String>();
 		temporalClassification.put(Arrays.asList("07", "08", "09", "10", "11", "12"), "morning");
@@ -322,21 +335,31 @@ public class SingleRecordService {
 	public VisualTrajectoryRecord translateToVisualisedTrajectory(final TrajectoryRecord trajectory) {
 		final HashMap<String, String> zoneInicials = this.getZoneInicials();
 		final HashMap<String, String> zoneNames = this.getZoneNames();
+		final HashMap<List<String>, String> zonemap = this.getGeneralizedZoneNames();
 		StringBuilder sb = new StringBuilder();
 		StringBuilder sb1 = new StringBuilder();
 		StringBuilder sb2 = new StringBuilder();
 		String visualised = null;
 		String named = null;
 		String initialized = null;
+		String anon = null;
 		VisualTrajectoryRecord visualTrajectoryRecord = new VisualTrajectoryRecord();
 		for (SingleRecord point : trajectory.getPoints()) {
 			visualised = sb.append(" -> ").append(point.getZone()).toString();
 			named = sb1.append(" -> ").append(zoneNames.get(point.getZone())).append(" (").append(point.getTimestamp().substring(11, 23)).append(") ").toString();
 			initialized = sb2.append(zoneInicials.get(point.getZone())).toString();
+			for (Map.Entry<List<String>, String> entry : zonemap.entrySet()) {
+				// TODO: Fix anon translation
+				if (entry.getKey().contains(point.getZone())) {
+					anon = sb.append(" -> ").append(entry.getValue()).toString();
+					break;
+				}
+			}
+			visualTrajectoryRecord.setVizualizedTrajectory(visualised);
+			visualTrajectoryRecord.setNamedTrajectory(named);
+			visualTrajectoryRecord.setInicalTrajectory(initialized);
+			visualTrajectoryRecord.setAnonymizedTrajectory(anon);
 		}
-		visualTrajectoryRecord.setVizualizedTrajectory(visualised);
-		visualTrajectoryRecord.setNamedTrajectory(named);
-		visualTrajectoryRecord.setInicalTrajectory(initialized);
 		visualTrajectoryRecord.setVendor(trajectory.getVendor());
 		return visualTrajectoryRecord;
 	}
