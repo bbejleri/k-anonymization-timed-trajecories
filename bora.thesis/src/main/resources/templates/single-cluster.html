@@ -13,7 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/104/three.js"></script>
 </head>
 <body>
-<div class="container">
+<div class="container-fluid">
    <div class="row">
      <h4 style="margin: 30px;">All Trajectories for Cluster: <span class="badge badge-secondary" th:text="${cluster.id}"></span></h4>  
    </div>
@@ -24,7 +24,7 @@
        <h5 style="margin-left: 30px;" th:text="'Cluster Density: ' + ${cluster.density}"></h5>
    </div>
     <div class="row">
-        <div class="col-9">
+        <div class="col-12" style="display: block;">
            <table class="table">
               <tr>
                   <th scope="col">Symbolic trajectories</th>

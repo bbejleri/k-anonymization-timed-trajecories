@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bora.thesis.dataaccess.ClusterRecord;
 import com.bora.thesis.dataaccess.ClusterWrapper;
@@ -28,8 +29,8 @@ public class ClusterRecordContoller {
 	private SingleRecordService singleRecordService;
 
 	@RequestMapping(value = "/cluster", method = RequestMethod.GET)
-	public String doGetCluster(final Model model) {
-		List<ClusterRecord> clusters = this.clusterRecordService.kMember(5);
+	public String doGetCluster(final Model model, @RequestParam(name = "k", required = false) int k) {
+		List<ClusterRecord> clusters = this.clusterRecordService.kMember(k);
 		model.addAttribute("clusters", clusters);
 		return "cluster-record-view";
 	}

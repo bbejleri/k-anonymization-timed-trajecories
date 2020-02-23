@@ -336,23 +336,29 @@ public class SingleRecordService {
 		final HashMap<String, String> zoneInicials = this.getZoneInicials();
 		final HashMap<String, String> zoneNames = this.getZoneNames();
 		final HashMap<List<String>, String> zonemap = this.getGeneralizedZoneNames();
+		final HashMap<List<String>, String> timemap = this.getTemporalClassification();
 		StringBuilder sb = new StringBuilder();
 		StringBuilder sb1 = new StringBuilder();
 		StringBuilder sb2 = new StringBuilder();
+		StringBuilder sb3 = new StringBuilder();
 		String visualised = null;
 		String named = null;
 		String initialized = null;
 		String anon = null;
+		String generalizedtime = null;
 		VisualTrajectoryRecord visualTrajectoryRecord = new VisualTrajectoryRecord();
 		for (SingleRecord point : trajectory.getPoints()) {
 			visualised = sb.append(" -> ").append(point.getZone()).toString();
 			named = sb1.append(" -> ").append(zoneNames.get(point.getZone())).append(" (").append(point.getTimestamp().substring(11, 23)).append(") ").toString();
 			initialized = sb2.append(zoneInicials.get(point.getZone())).toString();
+			for (Map.Entry<List<String>, String> entry : timemap.entrySet()) {
+				if (entry.getKey().contains(point.getTimestamp().substring(11, 13))) {
+					generalizedtime = entry.getValue();
+				}
+			}
 			for (Map.Entry<List<String>, String> entry : zonemap.entrySet()) {
-				// TODO: Fix anon translation
 				if (entry.getKey().contains(point.getZone())) {
-					anon = sb.append(" -> ").append(entry.getValue()).toString();
-					break;
+					anon = sb3.append(" -> ").append(entry.getValue()).append(" (").append(generalizedtime).append(") ").toString();
 				}
 			}
 			visualTrajectoryRecord.setVizualizedTrajectory(visualised);
