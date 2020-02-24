@@ -168,6 +168,10 @@ public class ClusterRecordService {
 					}
 				}
 			}
+			/**
+			 * TODO: check if the subsets of location for any cluster centroid is found at another cluster centroid, if not find the maximum
+			 * lcss between the actual cluster and other cluster centroids and prune the points to make the trajectory match 100%
+			 */
 		}
 		return clusters;
 	}

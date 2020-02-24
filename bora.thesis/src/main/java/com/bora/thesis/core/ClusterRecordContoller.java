@@ -14,6 +14,7 @@ import com.bora.thesis.dataaccess.ClusterRecord;
 import com.bora.thesis.dataaccess.ClusterWrapper;
 import com.bora.thesis.dataaccess.TrajectoryRecord;
 import com.bora.thesis.service.ClusterRecordService;
+import com.bora.thesis.service.ParentService;
 import com.bora.thesis.service.SingleRecordService;
 
 /**
@@ -21,6 +22,9 @@ import com.bora.thesis.service.SingleRecordService;
  */
 @Controller
 public class ClusterRecordContoller {
+
+	@Autowired
+	private ParentService parentService;
 
 	@Autowired
 	private ClusterRecordService clusterRecordService;
@@ -54,6 +58,7 @@ public class ClusterRecordContoller {
 	@RequestMapping(value = "/allclustercentroids", method = RequestMethod.GET)
 	public String doGetAllClusterCentroids(final Model model) {
 		List<ClusterRecord> clusters = this.clusterRecordService.kMember(5);
+		this.parentService.getAllSubstrings("ACEB");
 		model.addAttribute("clusters", clusters);
 		return "all-cluster-centroids";
 	}

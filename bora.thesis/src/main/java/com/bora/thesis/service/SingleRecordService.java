@@ -301,7 +301,6 @@ public class SingleRecordService {
 				String pointstring = ch.toString();
 				List<SingleRecord> points = trajectory.getPoints();
 				points.removeIf(t -> t.getZone().equalsIgnoreCase(map.get(pointstring)));
-				break;
 			}
 		}
 		return trajectory;
@@ -364,7 +363,7 @@ public class SingleRecordService {
 			visualTrajectoryRecord.setVizualizedTrajectory(visualised);
 			visualTrajectoryRecord.setNamedTrajectory(named);
 			visualTrajectoryRecord.setInicalTrajectory(initialized);
-			visualTrajectoryRecord.setAnonymizedTrajectory(anon);
+			// visualTrajectoryRecord.setAnonymizedTrajectory(anon);
 		}
 		visualTrajectoryRecord.setVendor(trajectory.getVendor());
 		return visualTrajectoryRecord;

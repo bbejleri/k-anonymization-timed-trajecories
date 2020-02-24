@@ -97,4 +97,20 @@ public class ParentService implements EditDistance<Integer> {
 		}
 		return lcsLengthArray;
 	}
+
+	/**
+	 * generates all subsets of an initial trajectory
+	 * 
+	 * @param s
+	 */
+	public void getAllSubstrings(String s) {
+		comb2("", s);
+	}
+
+	private static void comb2(String prefix, String s) {
+		System.out.println(prefix);
+		for (int i = 0; i < s.length(); i++) {
+			comb2(prefix + s.charAt(i), s.substring(i + 1));
+		}
+	}
 }
