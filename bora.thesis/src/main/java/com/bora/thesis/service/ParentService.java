@@ -1,5 +1,7 @@
 package com.bora.thesis.service;
 
+import java.util.List;
+
 import org.apache.commons.text.similarity.EditDistance;
 import org.apache.commons.text.similarity.LongestCommonSubsequence;
 import org.springframework.stereotype.Service;
@@ -101,16 +103,25 @@ public class ParentService implements EditDistance<Integer> {
 	/**
 	 * generates all subsets of an initial trajectory
 	 * 
+	 * @param {@link
+	 * 				String} list
 	 * @param s
 	 */
-	public void getAllSubstrings(String s) {
-		comb2("", s);
+	public List<String> getAllSubstrings(String s, List<String> list) {
+		return comb2("", s, list);
 	}
 
-	private static void comb2(String prefix, String s) {
-		System.out.println(prefix);
+	/**
+	 * @param prefix
+	 * @param s
+	 * @param list
+	 * @return
+	 */
+	private static List<String> comb2(String prefix, String s, List<String> list) {
 		for (int i = 0; i < s.length(); i++) {
-			comb2(prefix + s.charAt(i), s.substring(i + 1));
+			comb2(prefix + s.charAt(i), s.substring(i + 1), list);
 		}
+		list.add(prefix);
+		return list;
 	}
 }

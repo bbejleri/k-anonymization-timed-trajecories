@@ -11,7 +11,9 @@ import java.util.List;
  */
 public class ClusterWrapper {
 
-	private String centroid;
+	private String centroidSpatial;
+
+	private String centroidTemporal;
 
 	private int density;
 
@@ -22,10 +24,17 @@ public class ClusterWrapper {
 	private List<TrajectoryRecord> trajectoryRecords;
 
 	/**
-	 * @return the centroid
+	 * @return the centroidSpatial
 	 */
-	public String getCentroid() {
-		return centroid;
+	public String getCentroidSpatial() {
+		return centroidSpatial;
+	}
+
+	/**
+	 * @return the centroidTemporal
+	 */
+	public String getCentroidTemporal() {
+		return centroidTemporal;
 	}
 
 	/**
@@ -57,11 +66,19 @@ public class ClusterWrapper {
 	}
 
 	/**
-	 * @param centroid
-	 *           the centroid to set
+	 * @param centroidSpatial
+	 *           the centroidSpatial to set
 	 */
-	public void setCentroid(String centroid) {
-		this.centroid = centroid;
+	public void setCentroidSpatial(String centroidSpatial) {
+		this.centroidSpatial = centroidSpatial;
+	}
+
+	/**
+	 * @param centroidTemporal
+	 *           the centroidTemporal to set
+	 */
+	public void setCentroidTemporal(String centroidTemporal) {
+		this.centroidTemporal = centroidTemporal;
 	}
 
 	/**

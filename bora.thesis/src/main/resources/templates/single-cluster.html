@@ -18,8 +18,8 @@
      <h4 style="margin: 30px;">All Trajectories for Cluster: <span class="badge badge-secondary" th:text="${cluster.id}"></span></h4>  
    </div>
    <div class="row">
-       <h5 style="margin-left: 30px;" th:text="'Cluster Centroid: ' + ${cluster.centroid}"></h5>
-   </div><br>
+       <h5 style="margin-left: 30px;" th:text="'Cluster Centroid: ' + ${cluster.centroidSpatial} + ' ' +  ${cluster.centroidTemporal}"></h5>
+   </div><br> 
    <div class="row">
        <h5 style="margin-left: 30px;" th:text="'Cluster Density: ' + ${cluster.density}"></h5>
    </div>

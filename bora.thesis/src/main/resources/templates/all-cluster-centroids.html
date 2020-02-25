@@ -28,7 +28,7 @@
                <tbody>
                 <tr th:each="entry: ${clusters}" style="width:100%">
                     <td th:text="*{entry.id}"></td>  
-                    <td th:text="*{entry.centroid}"></td>
+                    <td th:text="*{entry.centroidSpatial} + ' ' + *{entry.centroidTemporal}"></td>
                     <td th:text="*{entry.density}"></td>
                </tr>           
                </tbody>

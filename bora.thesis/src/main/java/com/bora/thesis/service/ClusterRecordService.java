@@ -2,12 +2,12 @@ package com.bora.thesis.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,11 +37,33 @@ public class ClusterRecordService {
 		return this.parentService.apply(left, right);
 	}
 
+	/**
+	 * gives the minimal distance between 2 trajectories i.e they're almost not similar at all
+	 * 
+	 * @param distances
+	 * @return {@link Long} distance
+	 */
 	private int maxDistance(List<Integer> distances) {
 		return Collections.min(distances);
 	}
 
-	private long minDistance(final String string) {
+	/**
+	 * gives the minimal distance between 2 trajectories i.e they're almost similar
+	 * 
+	 * @param distances
+	 * @return {@link Long} distance
+	 */
+	private int minDistance(List<Integer> distances) {
+		return Collections.max(distances);
+	}
+
+	/**
+	 * checks against full overlap of trajectories
+	 * 
+	 * @param string
+	 * @return {@link Long} distance
+	 */
+	private long fullOverlap(final String string) {
 		return string.chars().mapToObj(ch -> (char) ch).count();
 	}
 
@@ -60,6 +82,13 @@ public class ClusterRecordService {
 		return rightRecord;
 	}
 
+	/**
+	 * checks if 2 initial trajectories have the same length
+	 * 
+	 * @param s1
+	 * @param s2
+	 * @return {@link boolean} same
+	 */
 	public boolean sameNumberOfPoints(final String s1, final String s2) {
 		boolean same = Boolean.FALSE;
 		long points1 = s1.chars().mapToObj(x -> (char) x).count();
@@ -68,6 +97,84 @@ public class ClusterRecordService {
 			same = Boolean.TRUE;
 		}
 		return same;
+	}
+
+	/**
+	 * compares 2 clusters on their location centroids and removes points which differ
+	 * 
+	 * @param c1
+	 * @param c2
+	 * @return {@link ClusterRecord} c1
+	 */
+	public ClusterRecord removeObsoletePointsOfCluster(final ClusterRecord c1, final ClusterRecord c2) {
+		final HashMap<String, String> map = this.singleRecordService.getSymbolicZones();
+		final String centroidSpatialC1 = c1.getCentroidSpatial();
+		final String centroidSpatialC2 = c2.getCentroidSpatial();
+		final List<Character> chars1 = centroidSpatialC1.chars().mapToObj(x -> (char) x).collect(Collectors.toList());
+		final List<Character> chars2 = centroidSpatialC2.chars().mapToObj(x -> (char) x).collect(Collectors.toList());
+		for (Character ch : chars1) {
+			if (!chars2.contains(ch)) {
+				for (TrajectoryRecord t : c1.getTrajectories()) {
+					List<SingleRecord> points = t.getPoints();
+					points.removeIf(x -> x.getZone().equalsIgnoreCase(map.get(ch.toString())));
+				}
+			}
+		}
+		return c1;
+	}
+
+	/**
+	 * generates all relevant subsets of spatial centroid of a cluster
+	 * 
+	 * @param cluster
+	 * @return {@link List<String>} filtered
+	 */
+	public List<String> getRelevantClusterSubsets(final ClusterRecord cluster) {
+		List<String> list = this.parentService.getAllSubstrings(cluster.getCentroidSpatial(), new ArrayList<String>());
+		List<String> filtered = list.stream().filter(s -> s.chars().count() > 1).collect(Collectors.toList());
+		// TODO: Exclude the first subset i.e the actual trajectory
+		return filtered;
+	}
+
+	/**
+	 * checks if each subset of a cluster's spatial centroid is found at at least one other spatial centroid cluster from all clusters
+	 * 
+	 * @param cluster
+	 * @param clusters
+	 * @return {@link Boolean} found
+	 */
+	public ClusterRecord checkClusterSubsets(final ClusterRecord cluster, final List<ClusterRecord> clusters) {
+		boolean found = Boolean.TRUE;
+		ClusterRecord prunedCluster = new ClusterRecord();
+		final List<String> clusterSubsets = this.getRelevantClusterSubsets(cluster);
+		for (String subset : clusterSubsets) {
+			for (ClusterRecord c : clusters) {
+				if (cluster.getId() != c.getId()) {
+					if (this.calculateLCSSSimilarity(subset, c.getCentroidSpatial()) != subset.length()) {
+						found = Boolean.FALSE;
+					} else {
+						found = Boolean.TRUE;
+						break;
+					}
+				}
+			}
+		}
+		if (!found) {
+			List<Integer> similarities = new ArrayList<Integer>();
+			for (ClusterRecord c1 : clusters) {
+				similarities.add(this.calculateLCSSSimilarity(cluster.getCentroidSpatial(), c1.getCentroidSpatial()));
+			}
+			for (ClusterRecord c2 : clusters) {
+				if (cluster.getId() != c2.getId()) {
+					if (this.calculateLCSSSimilarity(cluster.getCentroidSpatial(), c2.getCentroidSpatial()) == this.minDistance(similarities)) {
+						// TODO: FIX REMOVE!
+						prunedCluster = this.removeObsoletePointsOfCluster(cluster, c2);
+						return prunedCluster;
+					}
+				}
+			}
+		}
+		return cluster;
 	}
 
 	/**
@@ -108,7 +215,7 @@ public class ClusterRecordService {
 			final VisualTrajectoryRecord visualTrajectoryRecord = this.singleRecordService.translateToVisualisedTrajectory(record);
 			if (this.sameNumberOfPoints(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory())) {
 				if (this.calculateLCSSSimilarity(furthiestRecordVisual.getInicalTrajectory(), visualTrajectoryRecord.getInicalTrajectory()) == this
-						.minDistance(furthiestRecordVisual.getInicalTrajectory()) && this.singleRecordService.haveSameTemporalClassification(furthiestRecord, record)) {
+						.fullOverlap(furthiestRecordVisual.getInicalTrajectory()) && this.singleRecordService.haveSameTemporalClassification(furthiestRecord, record)) {
 					return record;
 				}
 			}
@@ -119,7 +226,7 @@ public class ClusterRecordService {
 	public ClusterRecord findBestCluster(final List<ClusterRecord> clusters, final TrajectoryRecord trajectory) {
 		final String trajectoryInitials = this.singleRecordService.translateToVisualisedTrajectory(trajectory).getInicalTrajectory();
 		for (ClusterRecord cluster : clusters) {
-			if (this.calculateLCSSSimilarity(StringUtils.substringBefore(cluster.getCentroid(), " "), trajectoryInitials) == this.minDistance(trajectoryInitials) - 1) {
+			if (this.calculateLCSSSimilarity(cluster.getCentroidSpatial(), trajectoryInitials) == this.fullOverlap(trajectoryInitials) - 1) {
 				if (this.singleRecordService.haveSameTemporalClassification(cluster.getTrajectories().get(0), trajectory)) {
 					return cluster;
 				}
@@ -138,8 +245,8 @@ public class ClusterRecordService {
 			clusterTrajectories.add(this.findBestNeighbour(alltrajectories, furthiestRecord));
 			alltrajectories.remove(this.findBestNeighbour(alltrajectories, furthiestRecord));
 		}
-		cluster.setCentroid(this.singleRecordService.translateToVisualisedTrajectory(clusterTrajectories.get(0)).getInicalTrajectory() + " "
-				+ this.singleRecordService.getGeneralTimestamp(clusterTrajectories.get(0)));
+		cluster.setCentroidSpatial(this.singleRecordService.translateToVisualisedTrajectory(clusterTrajectories.get(0)).getInicalTrajectory());
+		cluster.setCentroidTemporal(this.singleRecordService.getGeneralTimestamp(clusterTrajectories.get(0)));
 		cluster.setTrajectories(clusterTrajectories);
 		cluster.setDensity(clusterTrajectories.size());
 		return cluster;
@@ -161,9 +268,9 @@ public class ClusterRecordService {
 					if (ObjectUtils.isNotEmpty(cluster)) {
 						VisualTrajectoryRecord visualTrajectory = this.singleRecordService.translateToVisualisedTrajectory(trajectory);
 						final long initialsLength = visualTrajectory.getInicalTrajectory().chars().count();
-						final long centroidLength = StringUtils.substringBefore(cluster.getCentroid(), " ").chars().count();
+						final long centroidLength = cluster.getCentroidSpatial().chars().count();
 						if (initialsLength - centroidLength > 0) {
-							cluster.getTrajectories().add(this.singleRecordService.removeObsoletePoint(cluster.getCentroid(), trajectory));
+							cluster.getTrajectories().add(this.singleRecordService.removeObsoletePoint(cluster.getCentroidSpatial(), trajectory));
 						}
 					}
 				}
@@ -182,7 +289,8 @@ public class ClusterRecordService {
 		for (ClusterRecord c : clusters) {
 			ClusterWrapper clusterwrapper = new ClusterWrapper();
 			clusterwrapper.setId(c.getId());
-			clusterwrapper.setCentroid(c.getCentroid());
+			clusterwrapper.setCentroidSpatial(c.getCentroidSpatial());
+			clusterwrapper.setCentroidTemporal(c.getCentroidTemporal());
 			clusterwrapper.setDensity(c.getTrajectories().size());
 			List<VisualTrajectoryRecord> visuals = new ArrayList<VisualTrajectoryRecord>();
 			List<TrajectoryRecord> trajectories = new ArrayList<TrajectoryRecord>();
