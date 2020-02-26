@@ -65,14 +65,7 @@ public class SingleRecordAnonymizedService {
 		// TODO: Something about the vendor - cron?
 		databaseSingleRecordAnonymized.setTruncmac(singleRecord.getTruncmac());
 		databaseSingleRecordAnonymized.setEpocutc(singleRecord.getEpocutc());
-		String anonymizedZone = null;
-		for (Map.Entry<List<String>, String> entry : zonemap.entrySet()) {
-			if (entry.getKey().contains(singleRecord.getZone())) {
-				anonymizedZone = entry.getValue();
-				break;
-			}
-		}
-		databaseSingleRecordAnonymized.setZone(anonymizedZone);
+		databaseSingleRecordAnonymized.setZone(singleRecord.getZone());
 		final String timestamp = singleRecord.getTimestamp().substring(11, 13);
 		String anonymizedTimestamp = null;
 		for (Map.Entry<List<String>, String> entry : timestampmap.entrySet()) {

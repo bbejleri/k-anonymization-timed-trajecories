@@ -58,7 +58,10 @@ public class ClusterRecordContoller {
 	@RequestMapping(value = "/allclustercentroids", method = RequestMethod.GET)
 	public String doGetAllClusterCentroids(final Model model) {
 		List<ClusterRecord> clusters = this.clusterRecordService.kMember(5);
-		this.clusterRecordService.checkClusterSubsets(clusters.get(6), clusters);
+		for (ClusterRecord c : clusters) {
+			this.clusterRecordService.checkClusterSubsets(c, clusters);
+		}
+		// this.clusterRecordService.checkClusterSubsets(clusters.get(7), clusters);
 		model.addAttribute("clusters", clusters);
 		return "all-cluster-centroids";
 	}

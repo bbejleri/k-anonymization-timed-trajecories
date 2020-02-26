@@ -116,6 +116,7 @@ public class ClusterRecordService {
 			if (!chars2.contains(ch)) {
 				for (TrajectoryRecord t : c1.getTrajectories()) {
 					List<SingleRecord> points = t.getPoints();
+					System.out.println("removing point");
 					points.removeIf(x -> x.getZone().equalsIgnoreCase(map.get(ch.toString())));
 				}
 			}
@@ -132,7 +133,6 @@ public class ClusterRecordService {
 	public List<String> getRelevantClusterSubsets(final ClusterRecord cluster) {
 		List<String> list = this.parentService.getAllSubstrings(cluster.getCentroidSpatial(), new ArrayList<String>());
 		List<String> filtered = list.stream().filter(s -> s.chars().count() > 1).collect(Collectors.toList());
-		// TODO: Exclude the first subset i.e the actual trajectory
 		return filtered;
 	}
 
@@ -147,33 +147,49 @@ public class ClusterRecordService {
 		boolean found = Boolean.TRUE;
 		ClusterRecord prunedCluster = new ClusterRecord();
 		final List<String> clusterSubsets = this.getRelevantClusterSubsets(cluster);
-		for (String subset : clusterSubsets) {
-			for (ClusterRecord c : clusters) {
-				if (cluster.getId() != c.getId()) {
-					if (this.calculateLCSSSimilarity(subset, c.getCentroidSpatial()) != subset.length()) {
-						found = Boolean.FALSE;
-					} else {
-						found = Boolean.TRUE;
-						break;
+		System.out.println("-----------");
+		System.out.println(cluster.getCentroidSpatial());
+		System.out.println("Number of points: " + cluster.getCentroidSpatial().chars().count());
+		System.out.println("-----------");
+		if (cluster.getCentroidSpatial().chars().count() > 2) {
+			for (int i = 1; i < clusterSubsets.size(); i++) {
+				for (ClusterRecord c : clusters) {
+					if (cluster.getId() != c.getId()) {
+						if (this.calculateLCSSSimilarity(clusterSubsets.get(i), c.getCentroidSpatial()) != clusterSubsets.get(i).length()) {
+							found = Boolean.FALSE;
+						} else {
+							found = Boolean.TRUE;
+							break;
+						}
 					}
 				}
-			}
-		}
-		if (!found) {
-			List<Integer> similarities = new ArrayList<Integer>();
-			for (ClusterRecord c1 : clusters) {
-				similarities.add(this.calculateLCSSSimilarity(cluster.getCentroidSpatial(), c1.getCentroidSpatial()));
-			}
-			for (ClusterRecord c2 : clusters) {
-				if (cluster.getId() != c2.getId()) {
-					if (this.calculateLCSSSimilarity(cluster.getCentroidSpatial(), c2.getCentroidSpatial()) == this.minDistance(similarities)) {
-						// TODO: FIX REMOVE!
-						prunedCluster = this.removeObsoletePointsOfCluster(cluster, c2);
-						return prunedCluster;
+				if (!found) {
+					System.out.println("Subset " + clusterSubsets.get(i) + " of trajectory " + cluster.getCentroidSpatial() + " not found at all.");
+					List<Integer> similarities = new ArrayList<Integer>();
+					for (ClusterRecord c1 : clusters) {
+						similarities.add(this.calculateLCSSSimilarity(cluster.getCentroidSpatial(), c1.getCentroidSpatial()));
 					}
+					for (ClusterRecord c2 : clusters) {
+						if (cluster.getId() != c2.getId()) {
+							if (this.calculateLCSSSimilarity(cluster.getCentroidSpatial(), c2.getCentroidSpatial()) == this.minDistance(similarities)) {
+								// TODO: FIX REMOVE!
+								prunedCluster = this.removeObsoletePointsOfCluster(cluster, c2);
+								// return prunedCluster;
+							}
+						}
+					}
+					break;
+				} else {
+					System.out.println("Subset " + clusterSubsets.get(i) + " of trajectory " + cluster.getCentroidSpatial() + " FOUND.");
 				}
 			}
+		} else {
+			System.out.println("Not checked");
+			found = Boolean.TRUE;
 		}
+		System.out.println("//////");
+		System.out.println(found);
+		System.out.println("//////");
 		return cluster;
 	}
 

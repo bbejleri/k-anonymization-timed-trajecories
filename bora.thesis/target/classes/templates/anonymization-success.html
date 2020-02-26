@@ -20,9 +20,8 @@
 				<h2 class="alert alert-success center" role="alert">200 - Success</h2>
 				<h4><b th:text="'Data successfully anonymized with anonymity level: ' + ${k}"></b></h4><br>
 				<div style="border-style: ridge;">
-				    <p><b>Note: </b>The generalization hierarchy for the anonymization, consists on transforming quasi-identifying attributes <b>{Zone, Timestamp}</b>,
-				    into a lower level of detail.<br>Concretely, <b>Zone</b> is generalized into <b>{Market Place, Public Facility, City Attraction}</b>,<br>and <b>Timestamp</b> is generalized
-				    into <b>{Morning, Afternoon, Evening}.</b></p>
+				    <p><b>Note: </b>The generalization hierarchy for the anonymization, consists on transforming quasi-identifying attribute <b>{Timestamp}</b>,
+				    into a lower level of detail.<br>Concretely, <b>Timestamp</b> is generalized into <b>{Morning, Afternoon, Evening}.</b></p>
 				</div>			
 			</div>
 			<div class="col-lg-12">
