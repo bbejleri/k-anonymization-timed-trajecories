@@ -116,11 +116,11 @@ public class ClusterRecordService {
 			if (!chars2.contains(ch)) {
 				for (TrajectoryRecord t : c1.getTrajectories()) {
 					List<SingleRecord> points = t.getPoints();
-					System.out.println("removing point");
 					points.removeIf(x -> x.getZone().equalsIgnoreCase(map.get(ch.toString())));
 				}
 			}
 		}
+		c1.setCentroidSpatial(this.singleRecordService.translateToVisualisedTrajectory(c1.getTrajectories().get(0)).getInicalTrajectory());
 		return c1;
 	}
 
@@ -147,10 +147,6 @@ public class ClusterRecordService {
 		boolean found = Boolean.TRUE;
 		ClusterRecord prunedCluster = new ClusterRecord();
 		final List<String> clusterSubsets = this.getRelevantClusterSubsets(cluster);
-		System.out.println("-----------");
-		System.out.println(cluster.getCentroidSpatial());
-		System.out.println("Number of points: " + cluster.getCentroidSpatial().chars().count());
-		System.out.println("-----------");
 		if (cluster.getCentroidSpatial().chars().count() > 2) {
 			for (int i = 1; i < clusterSubsets.size(); i++) {
 				for (ClusterRecord c : clusters) {
@@ -164,33 +160,25 @@ public class ClusterRecordService {
 					}
 				}
 				if (!found) {
-					System.out.println("Subset " + clusterSubsets.get(i) + " of trajectory " + cluster.getCentroidSpatial() + " not found at all.");
 					List<Integer> similarities = new ArrayList<Integer>();
 					for (ClusterRecord c1 : clusters) {
-						similarities.add(this.calculateLCSSSimilarity(cluster.getCentroidSpatial(), c1.getCentroidSpatial()));
+						if (cluster.getId() != c1.getId()) {
+							similarities.add(this.calculateLCSSSimilarity(cluster.getCentroidSpatial(), c1.getCentroidSpatial()));
+						}
 					}
 					for (ClusterRecord c2 : clusters) {
 						if (cluster.getId() != c2.getId()) {
 							if (this.calculateLCSSSimilarity(cluster.getCentroidSpatial(), c2.getCentroidSpatial()) == this.minDistance(similarities)) {
-								// TODO: FIX REMOVE!
 								prunedCluster = this.removeObsoletePointsOfCluster(cluster, c2);
-								// return prunedCluster;
+								return prunedCluster;
 							}
 						}
 					}
 					break;
-				} else {
-					System.out.println("Subset " + clusterSubsets.get(i) + " of trajectory " + cluster.getCentroidSpatial() + " FOUND.");
 				}
 			}
-		} else {
-			System.out.println("Not checked");
-			found = Boolean.TRUE;
 		}
-		System.out.println("//////");
-		System.out.println(found);
-		System.out.println("//////");
-		return cluster;
+		return null;
 	}
 
 	/**
@@ -291,12 +279,26 @@ public class ClusterRecordService {
 					}
 				}
 			}
-			/**
-			 * TODO: check if the subsets of location for any cluster centroid is found at another cluster centroid, if not find the maximum
-			 * lcss between the actual cluster and other cluster centroids and prune the points to make the trajectory match 100%
-			 */
 		}
 		return clusters;
+	}
+
+	public List<ClusterRecord> finalizeKMember(final int k) {
+		List<ClusterRecord> list = this.kMember(k);
+		for (ClusterRecord record : list) {
+			ClusterRecord cluster = this.checkClusterSubsets(record, list);
+			if (cluster != null) {
+				// TODO: Fix same ids
+				if (record.getId() != cluster.getId()) {
+					if (record.getCentroidSpatial().equals(cluster.getCentroidSpatial()) && record.getCentroidTemporal().equals(cluster.getCentroidTemporal())) {
+						record.setTrajectories(cluster.getTrajectories());
+						// TODO: Remove cluster
+						// list.removeIf(x -> x.getId() == r1.getId());
+					}
+				}
+			}
+		}
+		return list;
 	}
 
 	public List<ClusterWrapper> getAllClusterTrajectories() {
