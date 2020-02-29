@@ -363,7 +363,6 @@ public class SingleRecordService {
 			visualTrajectoryRecord.setVizualizedTrajectory(visualised);
 			visualTrajectoryRecord.setNamedTrajectory(named);
 			visualTrajectoryRecord.setInicalTrajectory(initialized);
-			// visualTrajectoryRecord.setAnonymizedTrajectory(anon);
 		}
 		visualTrajectoryRecord.setVendor(trajectory.getVendor());
 		return visualTrajectoryRecord;

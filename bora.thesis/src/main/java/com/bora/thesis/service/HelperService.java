@@ -42,7 +42,7 @@ public class HelperService {
 		return check;
 	}
 
-	boolean isAnagramSort(final String string1, final String string2) {
+	public boolean isAnagramSort(final String string1, final String string2) {
 		if (string1.length() != string2.length()) {
 			return false;
 		}

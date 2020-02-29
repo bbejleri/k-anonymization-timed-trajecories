@@ -54,7 +54,6 @@ public class SingleRecordAnonymizedService {
 	public SingleRecordAnonymized fillValuesSingleRecordAnonymized(final SingleRecord singleRecord) {
 		SingleRecordAnonymized databaseSingleRecordAnonymized = new SingleRecordAnonymized();
 		final HashMap<List<String>, String> timestampmap = this.singleRecordService.getTemporalClassification();
-		final HashMap<List<String>, String> zonemap = this.singleRecordService.getGeneralizedZoneNames();
 		databaseSingleRecordAnonymized.setBatteryLevel(singleRecord.getBatteryLevel());
 		databaseSingleRecordAnonymized.setEventtype(singleRecord.getEventtype());
 		databaseSingleRecordAnonymized.setHashMac(singleRecord.getHashMac());
@@ -78,6 +77,11 @@ public class SingleRecordAnonymizedService {
 		return databaseSingleRecordAnonymized;
 	}
 
+	/**
+	 * checks if the dataset is already anonymized
+	 * 
+	 * @return {@link Boolean} isAnonymized
+	 */
 	public boolean isAnonymized() {
 		final boolean isAnonymized = CollectionUtils.isEmpty(this.getList()) ? Boolean.FALSE : Boolean.TRUE;
 		return isAnonymized;

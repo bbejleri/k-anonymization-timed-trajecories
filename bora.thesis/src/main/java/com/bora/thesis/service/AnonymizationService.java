@@ -22,7 +22,7 @@ public class AnonymizationService {
 	private SingleRecordAnonymizedService singleRecordAnonymizedService;
 
 	public void anonymizeDataset(final int k) {
-		List<ClusterRecord> clusters = this.clusterRecordService.kMember(k);
+		List<ClusterRecord> clusters = this.clusterRecordService.finalizeKMember(k);
 		List<SingleRecord> points = this.clusterRecordService.getAllClustersPoints(clusters);
 		points.stream().forEach(point -> {
 			SingleRecordAnonymized singleRecordAnonymized = this.singleRecordAnonymizedService.fillValuesSingleRecordAnonymized(point);

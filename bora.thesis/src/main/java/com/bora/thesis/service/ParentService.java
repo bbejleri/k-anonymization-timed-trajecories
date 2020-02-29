@@ -3,7 +3,6 @@ package com.bora.thesis.service;
 import java.util.List;
 
 import org.apache.commons.text.similarity.EditDistance;
-import org.apache.commons.text.similarity.LongestCommonSubsequence;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,11 +10,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ParentService implements EditDistance<Integer> {
-
-	/**
-	 * Object for calculating the longest common subsequence that we can then normalize in apply.
-	 */
-	private final LongestCommonSubsequence longestCommonSubsequence = new LongestCommonSubsequence();
 
 	/**
 	 * @param left
