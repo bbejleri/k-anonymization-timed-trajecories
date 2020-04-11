@@ -279,6 +279,7 @@ public class SingleRecordService {
 		}
 		for (List<SingleRecord> n : allNoise) {
 			for (SingleRecord foo : n) {
+				System.out.println("Deleted");
 				this.delete(foo);
 			}
 		}
