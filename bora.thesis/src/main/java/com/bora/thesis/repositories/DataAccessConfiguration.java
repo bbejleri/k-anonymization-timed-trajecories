@@ -35,7 +35,7 @@ public class DataAccessConfiguration {
 		basicDataSource.setMaxIdle(10);
 		basicDataSource.setMaxTotal(50);
 		basicDataSource.setMinIdle(2);
-		basicDataSource.setPassword("");
+		basicDataSource.setPassword("a2@bv1@4ttrabv");
 		basicDataSource.setPoolPreparedStatements(Boolean.TRUE);
 		basicDataSource.setTestOnBorrow(Boolean.TRUE);
 		basicDataSource.setTestOnReturn(Boolean.TRUE);
